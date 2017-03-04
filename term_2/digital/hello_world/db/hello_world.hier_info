@@ -1,0 +1,5 @@
+|hello_world
+LED7 <= <GND>
+sw0 => ~NO_FANOUT~
+
+
