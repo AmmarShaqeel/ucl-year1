@@ -3,22 +3,33 @@
 #include<string.h>
 
 /* structure for student details */
-struct student_details
+struct student_details_linked
 {
 		char student_name[100];
 		int student_number;
-		struct student_details *next;
+		struct student_details_linked *next;
+};
+
+struct student_details_binary
+{
+		char student_name[100];
+		int student_number;
+		struct student_details_binary *right;
+		struct student_details_binary *left;
 };
 
 
-void newStudentLinked(struct student_details **root);
-void deleteLinked(struct student_details **root);
-void printLinked(struct student_details **root);
-void printAllLinked(struct student_details **root);
-void newStudentBinary(struct student_details **root);
-void deleteBinary(struct student_details **root);
-void printBinary(struct student_details **root);
-void printAllBinary(struct student_details **root);
+/* declaring functions for linked mode */
+void newStudentLinked(struct student_details_linked **root);
+void deleteLinked(struct student_details_linked **root);
+void printLinked(struct student_details_linked **root);
+void printAllLinked(struct student_details_linked **root);
+
+/* declaring functions for binary mode */
+void newStudentBinary(struct student_details_binary **root);
+void deleteBinary(struct student_details_binary **root);
+void printBinary(struct student_details_binary **root);
+void printAllBinary(struct student_details_binary **root);
 
 
 int main(int argc, char *argv[])
@@ -26,7 +37,6 @@ int main(int argc, char *argv[])
 	int what_do;
 	int exit = 0;
     char mode[6];
-	struct student_details *root = NULL;	
 
     /* checks if user inputed a valid argument, and if not
      * then asks user to choose mode */
@@ -56,6 +66,7 @@ int main(int argc, char *argv[])
      * until user quits */
     if(strcmp(mode,"linked")==0)
     {
+	    struct student_details_linked *root = NULL;	
 	    while(exit == 0)
 	    {
             fpurge(stdin); /* purge input in case user tried to input
@@ -107,6 +118,7 @@ int main(int argc, char *argv[])
     /* same as above but for binary */
     else if(strcmp(mode, "binary")==0)
     {
+	    struct student_details_binary *root = NULL;	
 	    while(exit == 0)
 	    {
             fpurge(stdin); /* purge input in case user tried to input
@@ -159,13 +171,13 @@ int main(int argc, char *argv[])
 }
 
 /* adds a student to linked list - sorted alphabetically */
-void newStudentLinked(struct student_details **root)
+void newStudentLinked(struct student_details_linked **root)
 {
 	int student_number;
 	char student_name[100];
-	struct student_details *current;
-	struct student_details *previous = NULL;
-	struct student_details *new;
+	struct student_details_linked *current;
+	struct student_details_linked *previous = NULL;
+	struct student_details_linked *new;
 
     /* taking input for new entry from user */
 	fpurge(stdin); 
@@ -176,7 +188,7 @@ void newStudentLinked(struct student_details **root)
 
 	if(*root == NULL) /* runs if root has no value */ 
 	{
-	    current = malloc(sizeof(struct student_details));
+	    current = malloc(sizeof(struct student_details_linked));
 	    strcpy(current->student_name, student_name);
 	    current->student_number = student_number;
 	    current->next = NULL;
@@ -187,7 +199,7 @@ void newStudentLinked(struct student_details **root)
 	else	
 	{
         /* mallocs and assigns new data */
-	    new = malloc(sizeof(struct student_details));
+	    new = malloc(sizeof(struct student_details_linked));
 	    strcpy(new->student_name, student_name);
 	    new->student_number = student_number;
         new->next = NULL;
@@ -231,9 +243,9 @@ void newStudentLinked(struct student_details **root)
 }
 
 /* Iterates through linked list printing values */
-void printAllLinked(struct student_details **root)
+void printAllLinked(struct student_details_linked **root)
 {
-	struct student_details *current;
+	struct student_details_linked *current;
 
 	current = *root;
 
@@ -246,10 +258,10 @@ void printAllLinked(struct student_details **root)
 }
 
 /* deletes a user by searching for student name */
-void deleteLinked(struct student_details **root)
+void deleteLinked(struct student_details_linked **root)
 {
-    struct student_details *current;
-    struct student_details *previous = NULL;
+    struct student_details_linked *current;
+    struct student_details_linked *previous = NULL;
     char student_name[100];
 
     /* checks if root is null to stop errors  */
@@ -313,9 +325,9 @@ void deleteLinked(struct student_details **root)
 }
 
 /* prints a specific user's details by searching by name */
-void printLinked(struct student_details **root)
+void printLinked(struct student_details_linked **root)
 {
-    struct student_details *current;
+    struct student_details_linked *current;
     char student_name[100];
 
     /* checks if root is null to stop errors  */
@@ -350,18 +362,18 @@ void printLinked(struct student_details **root)
     }
 }
 
-void newStudentBinary(struct student_details **root)
+void newStudentBinary(struct student_details_binary **root)
 {
 }
 
-void printAllBinary(struct student_details **root)
+void printAllBinary(struct student_details_binary **root)
 {
 }
 
-void deleteBinary(struct student_details **root)
+void deleteBinary(struct student_details_binary **root)
 {
 }
 
-void printBinary(struct student_details **root)
+void printBinary(struct student_details_binary **root)
 {
 }
