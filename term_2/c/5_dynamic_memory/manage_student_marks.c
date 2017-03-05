@@ -32,8 +32,8 @@ void newStudentBinary(struct student_details_binary **root);
 void deleteBinary(struct student_details_binary **root);
 void printBinary(struct student_details_binary **root);
 void printAllBinary(struct student_details_binary **root);
-void saveFileBinary(struct student_details_binary **root)
-void readFileBinary(struct student_details_binary **root)
+void saveFileBinary(struct student_details_binary **root);
+void readFileBinary(struct student_details_binary **root);
 
 
 int main(int argc, char *argv[])
@@ -104,9 +104,11 @@ int main(int argc, char *argv[])
 	    		break;
 
 	    		case 5:
+                saveFileLinked(&root);
 	    		break;
 
 	    		case 6:
+                readFileLinked(&root);
 	    		break;
 	    		
 	    		case 7:
@@ -156,9 +158,11 @@ int main(int argc, char *argv[])
                 break;
 
                 case 5:
+                saveFileBinary(&root);
                 break;
 
                 case 6:
+                readFileBinary(&root);
                 break;
                 
                 case 7:
@@ -368,11 +372,26 @@ void printLinked(struct student_details_linked **root)
 
 void saveFileLinked(struct student_details_linked **root)
 {
+    char file_name[50];
+	struct student_details_linked *current;
+
+	current = *root;
+    
+    printf("Please input your file name\n");
+    scanf("%s",&file_name);
+    
+    FILE * file = fopen(file_name, "wb"); 
+
+	while(current != NULL)
+	{
+        fwrite(current, sizeof(struct student_details_linked), 1, file);
+	    current = current->next;
+	}
+     fclose(file);
 }
 
 void readFileLinked(struct student_details_linked **root)
 {
-
 }
 
 void newStudentBinary(struct student_details_binary **root)
