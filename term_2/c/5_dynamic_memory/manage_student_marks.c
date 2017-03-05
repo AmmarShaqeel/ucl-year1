@@ -112,7 +112,6 @@ int main(int argc, char *argv[])
 
 	    		case 6:
                 readFileLinked(&root);
-                printf("%d",root);
 	    		break;
 	    		
 	    		case 7:
@@ -445,23 +444,20 @@ void readFileLinked(struct student_details_linked **root)
 
     FILE * file = fopen(file_name, "rb"); 
 
-    if (file == NULL)
+    if (file != NULL)
+    {
+        current = malloc(sizeof(struct student_details_linked));
+        fread(current, sizeof(struct student_details_linked), 1, file);
+        *root = current;
+    }
+    else
     {
         printf("No file found");
         fclose(file);
         return;
     }
-    else if (file != NULL)
-    {
-        current = malloc(sizeof(struct student_details_linked));
-        fread(current, sizeof(struct student_details_linked), 1, file);
-        previous = current;
-        current->next = previous;
-
-    }
 
     fclose(file);
-    *root = current;
 }
 
 void newStudentBinary(struct student_details_binary **root)
