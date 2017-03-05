@@ -24,12 +24,16 @@ void newStudentLinked(struct student_details_linked **root);
 void deleteLinked(struct student_details_linked **root);
 void printLinked(struct student_details_linked **root);
 void printAllLinked(struct student_details_linked **root);
+void saveFileLinked(struct student_details_linked **root);
+void readFileLinked(struct student_details_linked **root);
 
 /* declaring functions for binary mode */
 void newStudentBinary(struct student_details_binary **root);
 void deleteBinary(struct student_details_binary **root);
 void printBinary(struct student_details_binary **root);
 void printAllBinary(struct student_details_binary **root);
+void saveFileBinary(struct student_details_binary **root)
+void readFileBinary(struct student_details_binary **root)
 
 
 int main(int argc, char *argv[])
@@ -133,38 +137,38 @@ int main(int argc, char *argv[])
 	    	
             /* switch for each of the options + 
              * default switch in case invalid characters are inputted */
-			/* switch(what_do) */
-			/* { */
-				/* case 1: */
-				/* newStudentBinary(&root); */
-				/* break; */
-				
-				/* case 2: */
-                /* deleteBinary(&root); */
-				/* break; */
+            switch(what_do)
+            {
+                case 1:
+                newStudentBinary(&root);
+                break;
+                
+                case 2:
+                deleteBinary(&root);
+                break;
 
-				/* case 3: */
-                /* printBinary(&root); */
-				/* break; */
+                case 3:
+                printBinary(&root);
+                break;
 
-				/* case 4: */
-                /* printAllBinary(&root); */
-				/* break; */
+                case 4:
+                printAllBinary(&root);
+                break;
 
-				/* case 5: */
-				/* break; */
+                case 5:
+                break;
 
-				/* case 6: */
-				/* break; */
-				
-				/* case 7: */
-				/* exit = 1; */
-				/* break; */
-			
-				/* default: */
-				/* printf("Input not recognised\n\n"); */
-				/* break;	 */
-			/* } */
+                case 6:
+                break;
+                
+                case 7:
+                exit = 1;
+                break;
+            
+                default:
+                printf("Input not recognised\n\n");
+                break;	
+            }
         }
 	}
 	return 0;
@@ -362,6 +366,15 @@ void printLinked(struct student_details_linked **root)
     }
 }
 
+void saveFileLinked(struct student_details_linked **root)
+{
+}
+
+void readFileLinked(struct student_details_linked **root)
+{
+
+}
+
 void newStudentBinary(struct student_details_binary **root)
 {
 }
@@ -375,5 +388,13 @@ void deleteBinary(struct student_details_binary **root)
 }
 
 void printBinary(struct student_details_binary **root)
+{
+}
+
+void saveFileBinary(struct student_details_binary **root)
+{
+}
+
+void readFileBinary(struct student_details_binary **root)
 {
 }
