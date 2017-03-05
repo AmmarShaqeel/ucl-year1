@@ -22,6 +22,7 @@ struct student_details_binary
 /* declaring functions for linked mode */
 void newStudentLinked(struct student_details_linked **root);
 void deleteLinked(struct student_details_linked **root);
+void deleteAllLinked(struct student_details_linked **root);
 void printLinked(struct student_details_linked **root);
 void printAllLinked(struct student_details_linked **root);
 void saveFileLinked(struct student_details_linked **root);
@@ -77,7 +78,7 @@ int main(int argc, char *argv[])
                               invalid characters, e.g. arrow key up in cmd */
 	    	what_do = 0;  /*  reset what_do (again in case user
                               input invalid characters) */
-	    	printf("Type your option:"
+	    	printf("\nType your option:"
             "\n1: Introduce new student\n2: Remove student\n"
             "3: Print student report\n4: Print report for all students\n"
             "5: Save to file\n6: Retrieve data from file\n7: Exit\n");
@@ -93,6 +94,7 @@ int main(int argc, char *argv[])
 	    		
 	    		case 2:
                 deleteLinked(&root);
+                printf("%d",root);
 	    		break;
 
 	    		case 3:
@@ -109,6 +111,7 @@ int main(int argc, char *argv[])
 
 	    		case 6:
                 readFileLinked(&root);
+                printf("%d",root);
 	    		break;
 	    		
 	    		case 7:
@@ -131,7 +134,7 @@ int main(int argc, char *argv[])
                               invalid characters, e.g. arrow key up in cmd */
 	    	what_do = 0;  /*  reset what_do (again in case user
                               input invalid characters) */
-	    	printf("Type your option:"
+	    	printf("\nType your option:"
             "\n1: Introduce new student\n2: Remove student\n"
             "3: Print student report\n4: Print report for all students\n"
             "5: Save to file\n6: Retrieve data from file\n7: Exit\n");
@@ -332,6 +335,26 @@ void deleteLinked(struct student_details_linked **root)
     }
 }
 
+void deleteAllLinked(struct student_details_linked **root)
+{
+	struct student_details_linked *current;
+	struct student_details_linked *previous;
+
+    if(*root == NULL)
+    {
+        printf("No changes to save!\n");
+        return;
+    }
+
+	current = *root;
+    *root = NULL;
+    while(current != NULL)
+    {
+        previous = current;
+        current = current->next;
+        free(previous);
+	} 
+}
 /* prints a specific user's details by searching by name */
 void printLinked(struct student_details_linked **root)
 {
@@ -366,7 +389,7 @@ void printLinked(struct student_details_linked **root)
     /* complains to user if student not found */
     else
     {
-        printf("A student with that name was not found\n");
+        printf("A student with that name was not found\n\n");
     }
 }
 
@@ -377,7 +400,7 @@ void saveFileLinked(struct student_details_linked **root)
 
 	current = *root;
     
-    printf("Please input your file name\n");
+    printf("\nPlease input your file name\n");
     scanf("%s",&file_name);
     
     FILE * file = fopen(file_name, "wb"); 
@@ -392,6 +415,24 @@ void saveFileLinked(struct student_details_linked **root)
 
 void readFileLinked(struct student_details_linked **root)
 {
+    int what_do=0;
+    struct student_details_linked *current;
+    current = *root;
+
+    printf("\nYour current changes will be lost. "
+            "Would you like to save?\n"
+            "1.Yes\n2.No\n");
+    scanf("%d",&what_do);
+
+    switch(what_do)
+    {
+        case 1:
+            saveFileLinked(&*root);
+        break;
+        case 2:
+            deleteAllLinked(&*root);
+        break;
+    }
 }
 
 void newStudentBinary(struct student_details_binary **root)
