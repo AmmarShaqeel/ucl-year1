@@ -31,6 +31,7 @@ void readFileLinked(struct student_details_linked **root);
 /* declaring functions for binary mode */
 void newStudentBinary(struct student_details_binary **root);
 void deleteBinary(struct student_details_binary **root);
+void deleteAllBinary(struct student_details_binary **root);
 void printBinary(struct student_details_binary **root);
 void printAllBinary(struct student_details_binary **root);
 void saveFileBinary(struct student_details_binary **root);
@@ -416,8 +417,11 @@ void saveFileLinked(struct student_details_linked **root)
 void readFileLinked(struct student_details_linked **root)
 {
     int what_do=0;
-    struct student_details_linked *current;
-    current = *root;
+    char file_name[50];
+	struct student_details_linked *current;
+	struct student_details_linked *previous = NULL;
+
+	current = *root;
 
     printf("\nYour current changes will be lost. "
             "Would you like to save?\n"
@@ -428,11 +432,36 @@ void readFileLinked(struct student_details_linked **root)
     {
         case 1:
             saveFileLinked(&*root);
+            deleteAllLinked(&*root);
         break;
         case 2:
             deleteAllLinked(&*root);
         break;
     }
+
+    
+    printf("\nPlease input the file you want to read.\n");
+    scanf("%s",&file_name);
+
+    FILE * file = fopen(file_name, "rb"); 
+
+    if (file == NULL)
+    {
+        printf("No file found");
+        fclose(file);
+        return;
+    }
+    else if (file != NULL)
+    {
+        current = malloc(sizeof(struct student_details_linked));
+        fread(current, sizeof(struct student_details_linked), 1, file);
+        previous = current;
+        current->next = previous;
+
+    }
+
+    fclose(file);
+    *root = current;
 }
 
 void newStudentBinary(struct student_details_binary **root)
