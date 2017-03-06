@@ -462,6 +462,65 @@ void readFileLinked(struct student_details_linked **root)
 
 void newStudentBinary(struct student_details_binary **root)
 {
+	struct student_details_linked *current = *root;
+	struct student_details_linked *previous = NULL;
+	struct student_details_linked *new;
+
+    /* taking input for new entry from user */
+	new = malloc(sizeof(struct student_details_linked));
+	fpurge(stdin); 
+	printf("Please input the new student's name\n");
+	scanf("%s",&new->student_name);
+	printf("Please input the new student's number\n");
+	scanf("%d",&new->student_number);
+    new->next = NULL;
+
+	if(*root == NULL) /* runs if root has no value */ 
+	{
+	    current = malloc(sizeof(struct student_details_linked));
+	    strcpy(current->student_name, student_name);
+	    current->student_number = student_number;
+	    current->next = NULL;
+	    *root = current;
+        return;
+    } 
+
+	else	
+	{
+        /* iterates through list until either: the last element is reached, 
+         * or until the strcmp gives a positive value (meaning that the next 
+         * element is further down alphabetically  */
+        while(current->next != NULL &&
+        strcmp(current->student_name,student_name) < 0)
+        {
+            printf("loop running\n");
+            previous = current;
+            current = current->next;
+        }
+
+        /* prepends entry & re-assigns root */
+        if(previous == NULL)         
+        {
+			new->next = current;
+			*root = new;
+            return;
+        }
+        /* checks if entry should be the last in the list, and if so then
+         * appends it */
+        else if(current->next == NULL &&
+        strcmp(current->student_name,student_name) < 0)
+        {
+	    current->next = new;
+        return;
+	    }
+        /* otherwise inserts entry between elements */
+        else
+        {
+	    previous->next = new;
+	    new->next = current;
+        return;
+	    }
+    }
 }
 
 void printAllBinary(struct student_details_binary **root)
