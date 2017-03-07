@@ -390,7 +390,7 @@ void saveFileLinked(struct student_details_linked **root)
     printf("\nPlease input your file name\n");
     scanf("%s",&file_name);
     
-    FILE * file = fopen(file_name, "wb"); 
+    FILE * file = fopen(file_name, "wb+"); 
 
 	while(current != NULL)
 	{
@@ -402,6 +402,7 @@ void saveFileLinked(struct student_details_linked **root)
 
 void readFileLinked(struct student_details_linked **root)
 {
+    int i;
     int what_do=0;
     char file_name[50];
 	struct student_details_linked *current;
@@ -434,8 +435,15 @@ void readFileLinked(struct student_details_linked **root)
     if (file != NULL)
     {
         current = malloc(sizeof(struct student_details_linked));
-        fread(current, sizeof(struct student_details_linked), 1, file);
+        i = fread(current, sizeof(struct student_details_linked), 1, file);
         *root = current;
+        
+        while(i != 0);
+        {
+            current->next = malloc(sizeof(struct student_details_linked));
+            current = current->next;
+            i = fread(current, sizeof(struct student_details_linked), 1, file);
+        }
     }
     else
     {
@@ -510,13 +518,10 @@ void printBinary(struct student_details_binary **root)
         printf("Please enter some students first!\n");
         return;
     }
-
-	current = *root;
-
-	fpurge(stdin); 
+    current = *root;
+    fpurge(stdin); 
     printf("Please enter the name of the student you would like to display\n");
     scanf("%s",&student_name);
-
     while(current->left != NULL && current->right != NULL && strcmp(current->student_name,student_name) != 0)
     {
        if(strcmp(current->student_name, student_name) > 0)
@@ -528,13 +533,14 @@ void printBinary(struct student_details_binary **root)
            current = current->left;
        }
     }
-    
+
     /* if match is found then following code runs */
     if(strcmp(current->student_name,student_name) == 0)
     {
         printf("\nStudent Name: %s\n",current->student_name);
         printf("Student Number: %d\n\n",current->student_number);
     }
+
     /* complains to user if student not found */
     else
     {
@@ -554,9 +560,10 @@ void printAllBinary(struct student_details_binary **root)
 	}
     else
     {
-        printAllBinary(&current->left);
-        printf("%s",current->student_name);
         printAllBinary(&current->right);
+	    printf("Student name is: %s\n", current->student_name);  
+	    printf("Student number is: %d\n\n", current->student_number);  
+        printAllBinary(&current->left);
     }
 }
 
