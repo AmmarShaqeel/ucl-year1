@@ -217,7 +217,7 @@ void newStudentLinked(struct student_details_linked **root)
         }
 
         /* prepends entry & re-assigns root */
-        if(previous == NULL)         
+        if(previous == NULL && strcmp(current->student_name,new->student_name) > 0)         
         {
 			new->next = current;
 			*root = new;
@@ -228,15 +228,15 @@ void newStudentLinked(struct student_details_linked **root)
         else if(current->next == NULL &&
         strcmp(current->student_name,new->student_name) < 0)
         {
-	    current->next = new;
-        return;
+            current->next = new;
+            return;
 	    }
         /* otherwise inserts entry between elements */
         else
         {
-	    previous->next = new;
-	    new->next = current;
-        return;
+            previous->next = new;
+            new->next = current;
+            return;
 	    }
     }
 }
@@ -438,11 +438,10 @@ void readFileLinked(struct student_details_linked **root)
         i = fread(current, sizeof(struct student_details_linked), 1, file);
         *root = current;
         
-        while(i != 0)
+        while(fread(current, sizeof(struct student_details_linked), 1, file))
         {
             current->next = malloc(sizeof(struct student_details_linked));
             current = current->next;
-            i = fread(current, sizeof(struct student_details_linked), 1, file);
         }
     }
     else
