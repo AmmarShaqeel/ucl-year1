@@ -390,7 +390,7 @@ void saveFileLinked(struct student_details_linked **root)
     printf("\nPlease input your file name\n");
     scanf("%s",&file_name);
     
-    FILE * file = fopen(file_name, "wb+"); 
+    FILE * file = fopen(file_name, "wb"); 
 
 	while(current != NULL)
 	{
@@ -438,7 +438,7 @@ void readFileLinked(struct student_details_linked **root)
         i = fread(current, sizeof(struct student_details_linked), 1, file);
         *root = current;
         
-        while(i != 0);
+        while(i != 0)
         {
             current->next = malloc(sizeof(struct student_details_linked));
             current = current->next;
