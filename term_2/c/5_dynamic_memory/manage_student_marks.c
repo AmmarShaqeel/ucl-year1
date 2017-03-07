@@ -241,21 +241,6 @@ void newStudentLinked(struct student_details_linked **root)
     }
 }
 
-/* Iterates through linked list printing values */
-void printAllLinked(struct student_details_linked **root)
-{
-	struct student_details_linked *current;
-
-	current = *root;
-
-	while(current != NULL)
-	{
-	    printf("Student name is: %s\n", current->student_name);  
-	    printf("Student number is: %d\n\n", current->student_number);  
-	    current = current->next;
-	}
-}
-
 /* deletes a user by searching for student name */
 void deleteLinked(struct student_details_linked **root)
 {
@@ -362,81 +347,11 @@ void printLinked(struct student_details_linked **root)
     printf("Please enter the name of the student you would like to display\n");
     scanf("%s",&student_name);
 
-    /* loops over list, until either the end is reached or a match is found */
-{
-	int student_number;
-	char student_name[100];
-	struct student_details_linked *current;
-	struct student_details_linked *previous = NULL;
-	struct student_details_linked *new;
-
-    /* taking input for new entry from user */
-	fpurge(stdin); 
-	printf("Please input the new student's name\n");
-	scanf("%s",&student_name);
-	printf("Please input the new student's number\n");
-	scanf("%d",&student_number);
-
-	if(*root == NULL) /* runs if root has no value */ 
-	{
-	    current = malloc(sizeof(struct student_details_linked));
-	    strcpy(current->student_name, student_name);
-	    current->student_number = student_number;
-	    current->next = NULL;
-	    *root = current;
-        return;
-    } 
-
-	else	
-	{
-        /* mallocs and assigns new data */
-	    new = malloc(sizeof(struct student_details_linked));
-	    strcpy(new->student_name, student_name);
-	    new->student_number = student_number;
-        new->next = NULL;
-        
-        current = *root;
-
-        /* iterates through list until either: the last element is reached, 
-         * or until the strcmp gives a positive value (meaning that the next 
-         * element is further down alphabetically  */
-        while(current->next != NULL &&
-        strcmp(current->student_name,new->student_name) < 0)
-        {
-            printf("loop running\n");
-            previous = current;
-            current = current->next;
-        }
-
-        /* prepends entry & re-assigns root */
-        if(previous == NULL)         
-        {
-			new->next = current;
-			*root = new;
-            return;
-        }
-        /* checks if entry should be the last in the list, and if so then
-         * appends it */
-        else if(current->next == NULL &&
-        strcmp(current->student_name,student_name) < 0)
-        {
-	    current->next = new;
-        return;
-	    }
-        /* otherwise inserts entry between elements */
-        else
-        {
-	    previous->next = new;
-	    new->next = current;
-        return;
-	    }
+    while(current->next != NULL && strcmp(current->student_name,student_name) != 0)
+    {
+        current = current->next;
     }
-}
-	while(current->next != NULL && strcmp(current->student_name,student_name) != 0)
-	{
-	    current = current->next;
-	}
-
+    
     /* if match is found then following code runs */
     if(strcmp(current->student_name,student_name) == 0)
     {
@@ -448,6 +363,21 @@ void printLinked(struct student_details_linked **root)
     {
         printf("A student with that name was not found\n\n");
     }
+}
+
+/* Iterates through linked list printing values */
+void printAllLinked(struct student_details_linked **root)
+{
+	struct student_details_linked *current;
+
+	current = *root;
+
+	while(current != NULL)
+	{
+	    printf("Student name is: %s\n", current->student_name);  
+	    printf("Student number is: %d\n\n", current->student_number);  
+	    current = current->next;
+	}
 }
 
 void saveFileLinked(struct student_details_linked **root)
@@ -531,14 +461,14 @@ void newStudentBinary(struct student_details_binary **root)
 	scanf("%s",&new->student_name);
 	printf("Please input the new student's number\n");
 	scanf("%d",&new->student_number);
-    new->next = NULL;
+    new->right = NULL;
+    new->left = NULL;
 
 	if(*root == NULL) /* runs if root has no value */ 
 	{
 	    *root = new;
         return;
     } 
-
 	else	
 	{
         /* iterates through list until either: the last element is reached, 
@@ -551,43 +481,86 @@ void newStudentBinary(struct student_details_binary **root)
                 previous = current;
                 current = current->right;
             }
-            else if
+            else
+            {
+                previous = current;
+                current = current->left;
+            }
         }
 
-        /* prepends entry & re-assigns root */
-        if(previous == NULL)         
-        {
-			new->next = current;
-			*root = new;
-            return;
-        }
-        /* checks if entry should be the last in the list, and if so then
-         * appends it */
-        else if(current->next == NULL &&
-        strcmp(current->student_name,new->student_name) < 0)
-        {
-	    current->next = new;
+       if(strcmp(current->student_name, new->student_name) > 0)
+       {
+           current->right=new;
+       }
+       else 
+       {
+           current->left=new;
+       }
+    }
+}
+
+void printBinary(struct student_details_binary **root)
+{
+    struct student_details_binary *current;
+    char student_name[100];
+
+    /* checks if root is null to stop errors  */
+    if(*root == NULL)
+    {
+        printf("Please enter some students first!\n");
         return;
-	    }
-        /* otherwise inserts entry between elements */
-        else
-        {
-	    previous->next = new;
-	    new->next = current;
-        return;
-	    }
+    }
+
+	current = *root;
+
+	fpurge(stdin); 
+    printf("Please enter the name of the student you would like to display\n");
+    scanf("%s",&student_name);
+
+    while(current->left != NULL && current->right != NULL && strcmp(current->student_name,student_name) != 0)
+    {
+       if(strcmp(current->student_name, student_name) > 0)
+       {
+           current = current->right;
+       }
+       else 
+       {
+           current = current->left;
+       }
+    }
+    
+    /* if match is found then following code runs */
+    if(strcmp(current->student_name,student_name) == 0)
+    {
+        printf("\nStudent Name: %s\n",current->student_name);
+        printf("Student Number: %d\n\n",current->student_number);
+    }
+    /* complains to user if student not found */
+    else
+    {
+        printf("A student with that name was not found\n\n");
     }
 }
 
 void printAllBinary(struct student_details_binary **root)
 {
+    struct student_details_binary *current;
+
+	current = *root;
+
+	if (current == NULL)
+	{
+        return;
+	}
+    else
+    {
+        printAllBinary(&current->left);
+        printf("%s",current->student_name);
+        printAllBinary(&current->right);
+    }
 }
 
 void deleteBinary(struct student_details_binary **root)
-{
-}
-
-void printBinary(struct student_details_binary **root)
 {
 }
 
