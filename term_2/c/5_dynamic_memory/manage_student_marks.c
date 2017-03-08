@@ -435,7 +435,6 @@ void readFileLinked(struct student_details_linked **root)
     if (file != NULL)
     {
         current = malloc(sizeof(struct student_details_linked));
-        i = fread(current, sizeof(struct student_details_linked), 1, file);
         *root = current;
         
         while(fread(current, sizeof(struct student_details_linked), 1, file))
