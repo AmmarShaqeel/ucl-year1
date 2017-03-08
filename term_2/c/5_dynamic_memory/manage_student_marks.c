@@ -593,6 +593,13 @@ void deleteBinary(struct student_details_binary **root)
     fpurge(stdin); 
     printf("Please enter the name of the student you would like to delete\n");
     scanf("%s",&student_name);
+
+    if((current)->right == NULL && (current)-> left == NULL && strcmp((current)->student_name, student_name) == 0)
+    {
+        free(current);
+        *root = current;
+    }
+
     found = searchDeleteBinary(&*root, NULL, student_name, found); 
 
     if(found == 0)
