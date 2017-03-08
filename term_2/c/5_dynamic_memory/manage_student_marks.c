@@ -410,9 +410,8 @@ void readFileLinked(struct student_details_linked **root)
 
 	current = *root;
 
-    printf("\nYour current changes will be lost. "
-            "Would you like to save?\n"
-            "1.Yes\n2.No\n");
+    printf("\nWould you like to save?\n"
+           "1.Yes\n2.No\n");
     scanf("%d",&what_do);
 
     switch(what_do)
@@ -439,8 +438,16 @@ void readFileLinked(struct student_details_linked **root)
         
         while(fread(current, sizeof(struct student_details_linked), 1, file))
         {
+            i = 1;
             current->next = malloc(sizeof(struct student_details_linked));
+            previous = current;
             current = current->next;
+        }
+        
+        if (i == 1)
+        {
+            previous->next = NULL;
+            free(current);
         }
     }
     else
@@ -480,7 +487,7 @@ void newStudentBinary(struct student_details_binary **root)
         /* iterates through list until either: the last element is reached, 
          * or until the strcmp gives a positive value (meaning that the next 
          * element is further down alphabetically  */
-        while(current->right != NULL && current->left != NULL) 
+        while(current != NULL) 
         {
             if(strcmp(current->student_name, new->student_name) > 0)
             {
@@ -494,13 +501,13 @@ void newStudentBinary(struct student_details_binary **root)
             }
         }
 
-       if(strcmp(current->student_name, new->student_name) > 0)
+       if(strcmp(previous->student_name, new->student_name) > 0)
        {
-           current->right=new;
+           previous->right=new;
        }
        else 
        {
-           current->left=new;
+           previous->left=new;
        }
     }
 }
