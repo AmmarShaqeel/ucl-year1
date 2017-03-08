@@ -33,6 +33,7 @@ void newStudentBinary(struct student_details_binary **root);
 void deleteBinary(struct student_details_binary **root);
 void deleteAllBinary(struct student_details_binary **root);
 void printBinary(struct student_details_binary **root);
+int searchBinary(struct student_details_binary **root, char student_name[100], int found);
 void printAllBinary(struct student_details_binary **root);
 void saveFileBinary(struct student_details_binary **root);
 void readFileBinary(struct student_details_binary **root);
@@ -514,42 +515,46 @@ void newStudentBinary(struct student_details_binary **root)
 
 void printBinary(struct student_details_binary **root)
 {
-    struct student_details_binary *current;
     char student_name[100];
+    int found = 0; 
 
-    /* checks if root is null to stop errors  */
     if(*root == NULL)
     {
         printf("Please enter some students first!\n");
         return;
     }
-    current = *root;
+
     fpurge(stdin); 
     printf("Please enter the name of the student you would like to display\n");
     scanf("%s",&student_name);
-    while(current->left != NULL && current->right != NULL && strcmp(current->student_name,student_name) != 0)
-    {
-       if(strcmp(current->student_name, student_name) > 0)
-       {
-           current = current->right;
-       }
-       else 
-       {
-           current = current->left;
-       }
-    }
+    found = searchBinary(&*root, student_name, found); 
 
-    /* if match is found then following code runs */
-    if(strcmp(current->student_name,student_name) == 0)
+    if(found == 0)
     {
-        printf("\nStudent Name: %s\n",current->student_name);
-        printf("Student Number: %d\n\n",current->student_number);
+        printf("\nNo students found\n");
     }
+}
 
-    /* complains to user if student not found */
+int searchBinary(struct student_details_binary **root, char student_name[100], int found)
+{
+    struct student_details_binary *current;
+    struct student_details_binary *previous = NULL;
+
+	current = *root;
+	if (current == NULL)
+	{
+        return found;
+	}
     else
     {
-        printf("A student with that name was not found\n\n");
+        if(strcmp(current->student_name, student_name) == 0)
+        {
+            found = 1;
+            printf("\nStudent name is: %s\n", current->student_name);  
+            printf("Student number is: %d\n\n", current->student_number);  
+        }
+        found = searchBinary(&current->right, student_name, found);
+        found = searchBinary(&current->left, student_name, found);
     }
 }
 
