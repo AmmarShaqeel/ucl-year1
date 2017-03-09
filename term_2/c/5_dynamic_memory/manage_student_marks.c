@@ -31,10 +31,13 @@ void readFileLinked(struct student_details_linked **root);
 /* declaring functions for binary mode */
 void newStudentBinary(struct student_details_binary **root);
 void deleteBinary(struct student_details_binary **root);
-int searchDeleteBinary(struct student_details_binary **current, struct student_details_binary **previous, char student_name[100], int found);
+struct student_details_binary *searchDeleteBinary(struct student_details_binary
+        **current, struct student_details_binary **previous, char
+        student_name[100]);
 void deleteAllBinary(struct student_details_binary **root);
 void printBinary(struct student_details_binary **root);
-int printSearchBinary(struct student_details_binary **current, char student_name[100], int found);
+int printSearchBinary(struct student_details_binary **current, char
+        student_name[100], int found);
 void printAllBinary(struct student_details_binary **root);
 void saveFileBinary(struct student_details_binary **root);
 void readFileBinary(struct student_details_binary **root);
@@ -70,7 +73,8 @@ int main(int argc, char *argv[])
         strcpy(mode,argv[1]);
     }
 
-    /* runs if mode is linked, and goes through while loop with the different options
+    /* runs if mode is linked, and goes through while loop with the different
+     * options
      * until user quits */
     if(strcmp(mode,"linked")==0)
     {
@@ -219,7 +223,8 @@ void newStudentLinked(struct student_details_linked **root)
         }
 
         /* prepends entry & re-assigns root */
-        if(previous == NULL && strcmp(current->student_name,new->student_name) > 0)         
+        if(previous == NULL && strcmp(current->student_name,new->student_name)
+                > 0)         
         {
 			new->next = current;
 			*root = new;
@@ -264,7 +269,8 @@ void deleteLinked(struct student_details_linked **root)
     scanf("%s",&student_name);
 
     /* loops over list, until either the end is reached or a match is found */
-	while(current->next != NULL && strcmp(current->student_name,student_name) != 0)
+    while(current->next != NULL && strcmp(current->student_name,student_name)
+            != 0)
 	{
         previous = current;    
 	    current = current->next;
@@ -273,7 +279,8 @@ void deleteLinked(struct student_details_linked **root)
     /* if match is found then following code runs */
     if(strcmp(current->student_name,student_name) == 0)
     {
-        /* if prev is unchanged, and current-> next is null there is only one element
+        /* if prev is unchanged, and current-> next is null there is only one
+         * element
          * this deletes element and sets root to NULL */
         if(current->next == NULL && previous == NULL)
         {
@@ -282,8 +289,8 @@ void deleteLinked(struct student_details_linked **root)
             printf("Student removed\n\n");
             return;
         }
-        /* if prev is unchanged and current->next is not null, then we delete current
-         * and reassign root */
+        /* if prev is unchanged and current->next is not null, then we delete
+         * current and reassign root */
         else if(previous == NULL && current->next != NULL)
         {
             previous = current->next;
@@ -292,8 +299,8 @@ void deleteLinked(struct student_details_linked **root)
             printf("Student removed\n\n");
             return;
         }  
-        /* otherwise we just delete current and reassign prev pointer to next list 
-         * element */
+        /* otherwise we just delete current and reassign prev pointer to next
+         * list element */
         else if(previous != NULL)
         {
             previous->next = current->next;
@@ -310,6 +317,7 @@ void deleteLinked(struct student_details_linked **root)
     }
 }
 
+/* deletes all memebers of linked list + frees memory */
 void deleteAllLinked(struct student_details_linked **root)
 {
 	struct student_details_linked *current;
@@ -330,6 +338,7 @@ void deleteAllLinked(struct student_details_linked **root)
         free(previous);
 	} 
 }
+
 /* prints a specific user's details by searching by name */
 void printLinked(struct student_details_linked **root)
 {
@@ -349,7 +358,8 @@ void printLinked(struct student_details_linked **root)
     printf("Please enter the name of the student you would like to display\n");
     scanf("%s",&student_name);
 
-    while(current->next != NULL && strcmp(current->student_name,student_name) != 0)
+    while(current->next != NULL && strcmp(current->student_name,student_name)
+            != 0)
     {
         current = current->next;
     }
@@ -382,6 +392,7 @@ void printAllLinked(struct student_details_linked **root)
 	}
 }
 
+/* asks for file name then saves to that file */
 void saveFileLinked(struct student_details_linked **root)
 {
     char file_name[50];
@@ -402,6 +413,8 @@ void saveFileLinked(struct student_details_linked **root)
      fclose(file);
 }
 
+/* asks for file name then reads from file
+ * has check if user wasnts to save */
 void readFileLinked(struct student_details_linked **root)
 {
     int i;
@@ -462,6 +475,8 @@ void readFileLinked(struct student_details_linked **root)
     fclose(file);
 }
 
+/* adds a new binary students - sorted alphabetically
+ * doesn't allow addition of students with the same name */
 void newStudentBinary(struct student_details_binary **root)
 {
 	struct student_details_binary *current;
@@ -499,6 +514,7 @@ void newStudentBinary(struct student_details_binary **root)
             else if(strcmp(current->student_name, new->student_name) == 0)
             {
                 printf("\nA student with that name already exists!\n");
+                free(new);
                 return;
             }
             else if(strcmp(current->student_name, new->student_name) < 0)
@@ -519,6 +535,8 @@ void newStudentBinary(struct student_details_binary **root)
     }
 }
 
+/* prints a specfic student 
+ * checks if root is null, if not then calls a recursive search function */
 void printBinary(struct student_details_binary **root)
 {
     char student_name[100];
@@ -541,7 +559,9 @@ void printBinary(struct student_details_binary **root)
     }
 }
 
-int printSearchBinary(struct student_details_binary **current, char student_name[100], int found)
+/* recursively searches for a student - and if found prints student */
+int printSearchBinary(struct student_details_binary **current, char
+        student_name[100], int found)
 {
 	if (*current == NULL)
 	{
@@ -554,12 +574,14 @@ int printSearchBinary(struct student_details_binary **current, char student_name
             found = 1;
             printf("\nStudent name is: %s\n", (*current)->student_name);  
             printf("Student number is: %d\n\n", (*current)->student_number);  
+            return found;
         }
         found = printSearchBinary(&(*current)->right, student_name, found);
         found = printSearchBinary(&(*current)->left, student_name, found);
     }
 }
 
+/* recursively goes through binary tree and prints all values */
 void printAllBinary(struct student_details_binary **root)
 {
     struct student_details_binary *current;
@@ -579,10 +601,12 @@ void printAllBinary(struct student_details_binary **root)
     }
 }
 
+/* deletes a specific student
+ * checks if root is null or needs to be deleted 
+ * then calls recursive search function */
 void deleteBinary(struct student_details_binary **root)
 {
     char student_name[100];
-    int found = 0; 
 
     if(*root == NULL)
     {
@@ -594,13 +618,11 @@ void deleteBinary(struct student_details_binary **root)
     printf("Please enter the name of the student you would like to delete\n");
     scanf("%s",&student_name);
 
-    if((current)->right == NULL && (current)-> left == NULL && strcmp((current)->student_name, student_name) == 0)
+    if( strcmp((*root)->student_name, student_name) == 0)
     {
-        free(current);
-        *root = current;
     }
 
-    found = searchDeleteBinary(&*root, NULL, student_name, found); 
+    searchDeleteBinary(&*root, NULL, student_name); 
 
     if(found == 0)
     {
@@ -608,11 +630,13 @@ void deleteBinary(struct student_details_binary **root)
     }
 }
 
-int searchDeleteBinary(struct student_details_binary **current, struct student_details_binary **previous, char student_name[100], int found)
+struct student_details_binary *searchDeleteBinary(struct student_details_binary
+        **current, struct student_details_binary **previous, char
+        student_name[100])
 {
 	if (*current == NULL)
 	{
-        return found;
+        return NULL;
 	}
     else
     {
@@ -640,8 +664,10 @@ int searchDeleteBinary(struct student_details_binary **current, struct student_d
             }
 
         }
-        found = searchDeleteBinary(&(*current)->right, &(*current), student_name, found);
-        found = searchDeleteBinary(&(*current)->left, &(*current), student_name, found);
+        found = searchDeleteBinary(&(*current)->right, &(*current),
+                student_name, found);
+        found = searchDeleteBinary(&(*current)->left, &(*current),
+                student_name, found);
     }
 }
 
