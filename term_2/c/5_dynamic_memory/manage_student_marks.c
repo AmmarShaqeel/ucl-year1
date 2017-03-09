@@ -634,6 +634,8 @@ struct student_details_binary *searchDeleteBinary(struct student_details_binary
         **current, struct student_details_binary **previous, char
         student_name[100])
 {
+    struct student_details_binary *smallest;
+
 	if (*current == NULL)
 	{
         return NULL;
@@ -642,7 +644,7 @@ struct student_details_binary *searchDeleteBinary(struct student_details_binary
     {
         if(strcmp((*current)->student_name, student_name) == 0)
         {
-            found = 1;
+            /* if current node has no children */
             if((*current)->right == NULL && (*current)-> left == NULL)
             {
                 printf("deleting");
@@ -656,13 +658,53 @@ struct student_details_binary *searchDeleteBinary(struct student_details_binary
                 }
                 free(*current);
             }
-            else if( ((*current)->right == NULL && (*current)->left != NULL)
-                    || ((*current)->right != NULL && (*current)->left == NULL))
+
+            /* if current node has one child only */
+            else if( ((*current)->right == NULL && (*current)->left != NULL) ||
+                    ((*current)->right != NULL && (*current)->left == NULL))
             {
+                /* if node has left child */
+                if((*current)->right == NULL && (*current)->left != NULL)
+                {
+                    if ((*previous)->right == *current)
+                    {
+                        (*previous)->right = (*current)->left;
+                    }
+                    else if((*previous)->left == *current)
+                    {
+                        (*previous)->left = (*current)->left;
+                    }
+                    free(*current);
+                }
 
-
+                /* if node has right child */
+                else if((*current)->right != NULL && (*current)->left == NULL)
+                {
+                    if ((*previous)->right == *current)
+                    {
+                        (*previous)->right = (*current)->right;
+                    }
+                    else if((*previous)->left == *current)
+                    {
+                        (*previous)->left = (*current)->right;
+                    }
+                    free(*current);
+                }
             }
 
+            /* Node has two children */
+            else if( (*current)->right != NULL && (*current)->left != NULL)
+            {
+
+                smallest = (*current)->left;
+                while(smallest->left != NULL)
+                {
+                    smallest = smallest->left;
+                }
+                current->student_name = smallest->student_name;
+                current->student_number = smallest->student_number;
+                free(smallest);
+            } 
         }
         found = searchDeleteBinary(&(*current)->right, &(*current),
                 student_name, found);
