@@ -1,0 +1,23 @@
+|full_adder
+C <= inst8.DB_MAX_OUTPUT_PORT_TYPE
+PINB => inst9.IN0
+PINB => inst11.IN1
+PINB => inst1.IN0
+PINB => inst6.IN1
+PINB => inst4.IN1
+PINB => inst7.IN0
+PINA => inst9.IN1
+PINA => inst10.IN1
+PINA => inst21.IN0
+PINA => inst6.IN0
+PINA => inst15.IN0
+PINA => inst14.IN0
+PINC => inst10.IN0
+PINC => inst11.IN0
+PINC => inst16.IN0
+PINC => inst6.IN2
+PINC => inst3.IN0
+PINC => inst5.IN2
+S <= inst13.DB_MAX_OUTPUT_PORT_TYPE
+
+

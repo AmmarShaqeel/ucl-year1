@@ -506,7 +506,7 @@ void newStudentBinary(struct student_details_binary **root)
          * element is further down alphabetically  */
         while(current != NULL) 
         {
-            if(strcmp(current->student_name, new->student_name) > 0)
+            if(strcmp(current->student_name, new->student_name) < 0)
             {
                 previous = current;
                 current = current->right;
@@ -517,14 +517,14 @@ void newStudentBinary(struct student_details_binary **root)
                 free(new);
                 return;
             }
-            else if(strcmp(current->student_name, new->student_name) < 0)
+            else if(strcmp(current->student_name, new->student_name) > 0)
             {
                 previous = current;
                 current = current->left;
             }
         }
 
-       if(strcmp(previous->student_name, new->student_name) > 0)
+       if(strcmp(previous->student_name, new->student_name) < 0)
        {
            previous->right=new;
        }
@@ -576,8 +576,8 @@ int printSearchBinary(struct student_details_binary **current, char
             printf("Student number is: %d\n\n", (*current)->student_number);  
             return found;
         }
-        found = printSearchBinary(&(*current)->right, student_name, found);
         found = printSearchBinary(&(*current)->left, student_name, found);
+        found = printSearchBinary(&(*current)->right, student_name, found);
     }
 }
 
@@ -594,10 +594,10 @@ void printAllBinary(struct student_details_binary **root)
 	}
     else
     {
-        printAllBinary(&current->right);
+        printAllBinary(&current->left);
 	    printf("Student name is: %s\n", current->student_name);  
 	    printf("Student number is: %d\n\n", current->student_number);  
-        printAllBinary(&current->left);
+        printAllBinary(&current->right);
     }
 }
 
@@ -624,10 +624,10 @@ void deleteBinary(struct student_details_binary **root)
 
     searchDeleteBinary(&*root, NULL, student_name); 
 
-    if(found == 0)
-    {
-        printf("\nNo matching students found\n");
-    }
+    /* if(found == 0) */
+    /* { */
+        /* printf("\nNo matching students found\n"); */
+    /* } */
 }
 
 struct student_details_binary *searchDeleteBinary(struct student_details_binary
@@ -635,6 +635,8 @@ struct student_details_binary *searchDeleteBinary(struct student_details_binary
         student_name[100])
 {
     struct student_details_binary *smallest;
+    struct student_details_binary *smallest_previous;
+    printf(" running");
 
 	if (*current == NULL)
 	{
@@ -657,6 +659,7 @@ struct student_details_binary *searchDeleteBinary(struct student_details_binary
                     (*previous)->left = NULL;
                 }
                 free(*current);
+                return NULL;
             }
 
             /* if current node has one child only */
@@ -675,6 +678,7 @@ struct student_details_binary *searchDeleteBinary(struct student_details_binary
                         (*previous)->left = (*current)->left;
                     }
                     free(*current);
+                    return NULL;
                 }
 
                 /* if node has right child */
@@ -689,6 +693,7 @@ struct student_details_binary *searchDeleteBinary(struct student_details_binary
                         (*previous)->left = (*current)->right;
                     }
                     free(*current);
+                    return NULL;
                 }
             }
 
@@ -697,19 +702,21 @@ struct student_details_binary *searchDeleteBinary(struct student_details_binary
             {
 
                 smallest = (*current)->left;
+                smallest_previous = (*current);
                 while(smallest->left != NULL)
                 {
                     smallest = smallest->left;
                 }
-                current->student_name = smallest->student_name;
-                current->student_number = smallest->student_number;
+                printf("test: student name %s",smallest->student_name);
+                strcpy((*current)->student_name,smallest->student_name);
+                (*current)->student_number = smallest->student_number;
+                smallest_previous->left = NULL;
                 free(smallest);
+                return NULL;
             } 
         }
-        found = searchDeleteBinary(&(*current)->right, &(*current),
-                student_name, found);
-        found = searchDeleteBinary(&(*current)->left, &(*current),
-                student_name, found);
+        searchDeleteBinary(&(*current)->left, &(*current), student_name);
+        searchDeleteBinary(&(*current)->right, &(*current), student_name);
     }
 }
 
