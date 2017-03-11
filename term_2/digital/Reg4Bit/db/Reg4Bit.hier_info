@@ -1,0 +1,19 @@
+|Reg4Bit
+LED0 <= inst.DB_MAX_OUTPUT_PORT_TYPE
+KEY1 => inst.ACLR
+KEY1 => inst4.ACLR
+KEY1 => inst3.ACLR
+KEY1 => inst2.ACLR
+KEY0 => inst.CLK
+KEY0 => inst4.CLK
+KEY0 => inst3.CLK
+KEY0 => inst2.CLK
+SW0 => inst.DATAIN
+LED1 <= inst4.DB_MAX_OUTPUT_PORT_TYPE
+SW1 => inst4.DATAIN
+LED2 <= inst3.DB_MAX_OUTPUT_PORT_TYPE
+SW2 => inst3.DATAIN
+LED3 <= inst2.DB_MAX_OUTPUT_PORT_TYPE
+SW3 => inst2.DATAIN
+
+

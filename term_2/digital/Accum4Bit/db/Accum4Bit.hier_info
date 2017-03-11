@@ -1,0 +1,141 @@
+|Accum4Bit
+LED0 <= 4BitAdder:inst.S0
+SW3 => 4BitAdder:inst.A3
+SW2 => 4BitAdder:inst.A2
+SW1 => 4BitAdder:inst.A1
+KEY0 => Reg4Bit:inst3.CLEAR
+KEY1 => Reg4Bit:inst3.CLOCK
+SW0 => 4BitAdder:inst.A0
+LED4 <= 4BitAdder:inst.C_Out
+LED3 <= 4BitAdder:inst.S3
+LED2 <= 4BitAdder:inst.S2
+LED1 <= 4BitAdder:inst.S1
+
+
+|Accum4Bit|4BitAdder:inst
+S0 <= FullAdder:inst.S
+A0 => FullAdder:inst.PINA
+B0 => FullAdder:inst.PINB
+S1 <= FullAdder:inst1.S
+A1 => FullAdder:inst1.PINA
+B1 => FullAdder:inst1.PINB
+S2 <= FullAdder:inst2.S
+A2 => FullAdder:inst2.PINA
+B2 => FullAdder:inst2.PINB
+S3 <= FullAdder:inst3.S
+A3 => FullAdder:inst3.PINA
+B3 => FullAdder:inst3.PINB
+C_Out <= FullAdder:inst3.C
+
+
+|Accum4Bit|4BitAdder:inst|FullAdder:inst
+C <= inst8.DB_MAX_OUTPUT_PORT_TYPE
+PINB => inst9.IN0
+PINB => inst11.IN1
+PINB => inst1.IN0
+PINB => inst6.IN1
+PINB => inst4.IN1
+PINB => inst7.IN0
+PINA => inst9.IN1
+PINA => inst10.IN1
+PINA => inst21.IN0
+PINA => inst6.IN0
+PINA => inst15.IN0
+PINA => inst14.IN0
+PINC => inst10.IN0
+PINC => inst11.IN0
+PINC => inst16.IN0
+PINC => inst6.IN2
+PINC => inst3.IN0
+PINC => inst5.IN2
+S <= inst13.DB_MAX_OUTPUT_PORT_TYPE
+
+
+|Accum4Bit|4BitAdder:inst|FullAdder:inst1
+C <= inst8.DB_MAX_OUTPUT_PORT_TYPE
+PINB => inst9.IN0
+PINB => inst11.IN1
+PINB => inst1.IN0
+PINB => inst6.IN1
+PINB => inst4.IN1
+PINB => inst7.IN0
+PINA => inst9.IN1
+PINA => inst10.IN1
+PINA => inst21.IN0
+PINA => inst6.IN0
+PINA => inst15.IN0
+PINA => inst14.IN0
+PINC => inst10.IN0
+PINC => inst11.IN0
+PINC => inst16.IN0
+PINC => inst6.IN2
+PINC => inst3.IN0
+PINC => inst5.IN2
+S <= inst13.DB_MAX_OUTPUT_PORT_TYPE
+
+
+|Accum4Bit|4BitAdder:inst|FullAdder:inst2
+C <= inst8.DB_MAX_OUTPUT_PORT_TYPE
+PINB => inst9.IN0
+PINB => inst11.IN1
+PINB => inst1.IN0
+PINB => inst6.IN1
+PINB => inst4.IN1
+PINB => inst7.IN0
+PINA => inst9.IN1
+PINA => inst10.IN1
+PINA => inst21.IN0
+PINA => inst6.IN0
+PINA => inst15.IN0
+PINA => inst14.IN0
+PINC => inst10.IN0
+PINC => inst11.IN0
+PINC => inst16.IN0
+PINC => inst6.IN2
+PINC => inst3.IN0
+PINC => inst5.IN2
+S <= inst13.DB_MAX_OUTPUT_PORT_TYPE
+
+
+|Accum4Bit|4BitAdder:inst|FullAdder:inst3
+C <= inst8.DB_MAX_OUTPUT_PORT_TYPE
+PINB => inst9.IN0
+PINB => inst11.IN1
+PINB => inst1.IN0
+PINB => inst6.IN1
+PINB => inst4.IN1
+PINB => inst7.IN0
+PINA => inst9.IN1
+PINA => inst10.IN1
+PINA => inst21.IN0
+PINA => inst6.IN0
+PINA => inst15.IN0
+PINA => inst14.IN0
+PINC => inst10.IN0
+PINC => inst11.IN0
+PINC => inst16.IN0
+PINC => inst6.IN2
+PINC => inst3.IN0
+PINC => inst5.IN2
+S <= inst13.DB_MAX_OUTPUT_PORT_TYPE
+
+
+|Accum4Bit|Reg4Bit:inst3
+OUTPUT1 <= inst.DB_MAX_OUTPUT_PORT_TYPE
+CLEAR => inst.ACLR
+CLEAR => inst4.ACLR
+CLEAR => inst3.ACLR
+CLEAR => inst2.ACLR
+CLOCK => inst.CLK
+CLOCK => inst4.CLK
+CLOCK => inst3.CLK
+CLOCK => inst2.CLK
+INPUT1 => inst.DATAIN
+OUTPUT2 <= inst4.DB_MAX_OUTPUT_PORT_TYPE
+INPUT2 => inst4.DATAIN
+OUTPUT3 <= inst3.DB_MAX_OUTPUT_PORT_TYPE
+INPUT3 => inst3.DATAIN
+OUTPUT4 <= inst2.DB_MAX_OUTPUT_PORT_TYPE
+INPUT4 => inst2.DATAIN
+
+

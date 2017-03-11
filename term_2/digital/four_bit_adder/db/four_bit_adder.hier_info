@@ -1,0 +1,106 @@
+|four_bit_adder
+S0 <= FullAdder:inst.S
+A0 => FullAdder:inst.PINA
+B0 => FullAdder:inst.PINB
+S1 <= FullAdder:inst1.S
+A1 => FullAdder:inst1.PINA
+B1 => FullAdder:inst1.PINB
+S2 <= FullAdder:inst2.S
+A2 => FullAdder:inst2.PINA
+S3 <= FullAdder:inst3.S
+A3 => FullAdder:inst3.PINA
+C_Out <= FullAdder:inst3.C
+
+
+|four_bit_adder|FullAdder:inst
+C <= inst8.DB_MAX_OUTPUT_PORT_TYPE
+PINB => inst9.IN0
+PINB => inst11.IN1
+PINB => inst1.IN0
+PINB => inst6.IN1
+PINB => inst4.IN1
+PINB => inst7.IN0
+PINA => inst9.IN1
+PINA => inst10.IN1
+PINA => inst21.IN0
+PINA => inst6.IN0
+PINA => inst15.IN0
+PINA => inst14.IN0
+PINC => inst10.IN0
+PINC => inst11.IN0
+PINC => inst16.IN0
+PINC => inst6.IN2
+PINC => inst3.IN0
+PINC => inst5.IN2
+S <= inst13.DB_MAX_OUTPUT_PORT_TYPE
+
+
+|four_bit_adder|FullAdder:inst1
+C <= inst8.DB_MAX_OUTPUT_PORT_TYPE
+PINB => inst9.IN0
+PINB => inst11.IN1
+PINB => inst1.IN0
+PINB => inst6.IN1
+PINB => inst4.IN1
+PINB => inst7.IN0
+PINA => inst9.IN1
+PINA => inst10.IN1
+PINA => inst21.IN0
+PINA => inst6.IN0
+PINA => inst15.IN0
+PINA => inst14.IN0
+PINC => inst10.IN0
+PINC => inst11.IN0
+PINC => inst16.IN0
+PINC => inst6.IN2
+PINC => inst3.IN0
+PINC => inst5.IN2
+S <= inst13.DB_MAX_OUTPUT_PORT_TYPE
+
+
+|four_bit_adder|FullAdder:inst2
+C <= inst8.DB_MAX_OUTPUT_PORT_TYPE
+PINB => inst9.IN0
+PINB => inst11.IN1
+PINB => inst1.IN0
+PINB => inst6.IN1
+PINB => inst4.IN1
+PINB => inst7.IN0
+PINA => inst9.IN1
+PINA => inst10.IN1
+PINA => inst21.IN0
+PINA => inst6.IN0
+PINA => inst15.IN0
+PINA => inst14.IN0
+PINC => inst10.IN0
+PINC => inst11.IN0
+PINC => inst16.IN0
+PINC => inst6.IN2
+PINC => inst3.IN0
+PINC => inst5.IN2
+S <= inst13.DB_MAX_OUTPUT_PORT_TYPE
+
+
+|four_bit_adder|FullAdder:inst3
+C <= inst8.DB_MAX_OUTPUT_PORT_TYPE
+PINB => inst9.IN0
+PINB => inst11.IN1
+PINB => inst1.IN0
+PINB => inst6.IN1
+PINB => inst4.IN1
+PINB => inst7.IN0
+PINA => inst9.IN1
+PINA => inst10.IN1
+PINA => inst21.IN0
+PINA => inst6.IN0
+PINA => inst15.IN0
+PINA => inst14.IN0
+PINC => inst10.IN0
+PINC => inst11.IN0
+PINC => inst16.IN0
+PINC => inst6.IN2
+PINC => inst3.IN0
+PINC => inst5.IN2
+S <= inst13.DB_MAX_OUTPUT_PORT_TYPE
+
+
