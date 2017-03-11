@@ -31,7 +31,7 @@ void readFileLinked(struct student_details_linked **root);
 /* declaring functions for binary mode */
 void newStudentBinary(struct student_details_binary **root);
 void deleteBinary(struct student_details_binary **root);
-int searchDeleteBinary(struct student_details_binary **current, struct student_details_binary **previous, char student_name[100]);
+int searchDeleteBinary(struct student_details_binary **current, struct student_details_binary **previous, char student_name[100], int found);
 void deleteAllBinary(struct student_details_binary **root);
 void printBinary(struct student_details_binary **root);
 int printSearchBinary(struct student_details_binary **current, char student_name[100], int found);
@@ -630,11 +630,11 @@ void deleteBinary(struct student_details_binary **root)
         }
 
         /* if root node has one child only */
-        else if( ((*current)->right == NULL && (*current)->left != NULL) ||
-                ((*current)->right != NULL && (*current)->left == NULL))
+        else if( ((*root)->right == NULL && (*root)->left != NULL) ||
+                ((*root)->right != NULL && (*root)->left == NULL))
         {
             /* if node has left child */
-            if((*current)->right == NULL && (*current)->left != NULL)
+            if((*root)->right == NULL && (*root)->left != NULL)
             {
                 current = *root;
                 *root = current->left;
@@ -679,7 +679,7 @@ int searchDeleteBinary(struct student_details_binary **current, struct student_d
             /* if current node has no children */
             if((*current)->right == NULL && (*current)-> left == NULL)
             {
-                printf("deleting");
+                printf("TK: deleting");
                 if ((*previous)->right == *current)
                 {
                     (*previous)->right = NULL;
@@ -733,14 +733,19 @@ int searchDeleteBinary(struct student_details_binary **current, struct student_d
 
                 smallest = (*current)->left;
                 smallest_previous = (*current);
+
                 while(smallest->left != NULL)
                 {
+                    smallest_previous = smallest;
                     smallest = smallest->left;
                 }
-                printf("test: student name %s",smallest->student_name);
+                
+                printf("TK: student name %s",smallest->student_name);
+
                 strcpy((*current)->student_name,smallest->student_name);
                 (*current)->student_number = smallest->student_number;
                 smallest_previous->left = NULL;
+
                 free(smallest);
                 return found;
             } 
