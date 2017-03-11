@@ -25,8 +25,8 @@ void deleteLinked(struct student_details_linked **root);
 void deleteAllLinked(struct student_details_linked **root);
 void printLinked(struct student_details_linked **root);
 void printAllLinked(struct student_details_linked **root);
-void saveFileLinked(struct student_details_linked **root);
-void readFileLinked(struct student_details_linked **root);
+void saveLinked(struct student_details_linked **root);
+void readLinked(struct student_details_linked **root);
 
 /* declaring functions for binary mode */
 void newStudentBinary(struct student_details_binary **root);
@@ -36,8 +36,9 @@ void deleteAllBinary(struct student_details_binary **root);
 void printBinary(struct student_details_binary **root);
 int printSearchBinary(struct student_details_binary **current, char student_name[100], int found);
 void printAllBinary(struct student_details_binary **root);
-void saveFileBinary(struct student_details_binary **root);
-void readFileBinary(struct student_details_binary **root);
+void saveBinary(struct student_details_binary **root);
+void saveSearchBinary(struct student_details_binary **current, FILE **file);
+void readBinary(struct student_details_binary **root);
 
 
 int main(int argc, char *argv[])
@@ -110,11 +111,11 @@ int main(int argc, char *argv[])
 	    		break;
 
 	    		case 5:
-                saveFileLinked(&root);
+                saveLinked(&root);
 	    		break;
 
 	    		case 6:
-                readFileLinked(&root);
+                readLinked(&root);
 	    		break;
 	    		
 	    		case 7:
@@ -164,11 +165,11 @@ int main(int argc, char *argv[])
                 break;
 
                 case 5:
-                saveFileBinary(&root);
+                saveBinary(&root);
                 break;
 
                 case 6:
-                readFileBinary(&root);
+                readBinary(&root);
                 break;
                 
                 case 7:
@@ -390,7 +391,7 @@ void printAllLinked(struct student_details_linked **root)
 }
 
 /* asks for file name then saves to that file */
-void saveFileLinked(struct student_details_linked **root)
+void saveLinked(struct student_details_linked **root)
 {
     char file_name[50];
 	struct student_details_linked *current;
@@ -412,7 +413,7 @@ void saveFileLinked(struct student_details_linked **root)
 
 /* asks for file name then reads from file
  * has check if user wasnts to save */
-void readFileLinked(struct student_details_linked **root)
+void readLinked(struct student_details_linked **root)
 {
     int i;
     int what_do=0;
@@ -429,7 +430,7 @@ void readFileLinked(struct student_details_linked **root)
     switch(what_do)
     {
         case 1:
-            saveFileLinked(&*root);
+            saveLinked(&*root);
             deleteAllLinked(&*root);
         break;
         case 2:
@@ -755,10 +756,33 @@ int searchDeleteBinary(struct student_details_binary **current, struct student_d
     }
 }
 
-void saveFileBinary(struct student_details_binary **root)
+void saveBinary(struct student_details_binary **root)
 {
+    char file_name[50];
+    
+    printf("\nPlease input your file name\n");
+    scanf("%s",&file_name);
+    
+    FILE *file = fopen(file_name, "wb"); 
+
+    saveSearchBinary(&(*root), &file);
+
+     fclose(file);
 }
 
-void readFileBinary(struct student_details_binary **root)
+void saveSearchBinary(struct student_details_binary **current, FILE **file)
+{
+	if (*current == NULL)
+    {
+        return;
+    } 
+
+    fwrite(*current, sizeof(struct student_details_binary), 1, *file);
+
+    saveSearchBinary(&(*current)->left, &(*file));
+    saveSearchBinary(&(*current)->right, &(*file));
+}
+
+void readBinary(struct student_details_binary **root)
 {
 }
