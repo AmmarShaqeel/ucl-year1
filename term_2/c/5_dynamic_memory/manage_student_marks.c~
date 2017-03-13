@@ -668,11 +668,7 @@ void leftRotateBinary(struct student_details_binary **root)
     strcpy(current->student_name,right->student_name);
     current->student_number,right->student_number;
 
-<<<<<<< HEAD
-    /* copies info from temp to right node */
-=======
     /* copeis info from temp to right node */
->>>>>>> 62ce6fd5cde0a5f48143f5178ce0083ec9ebe027
     strcpy(right->student_name, temp->student_name);
     right->student_number, temp->student_number;
 
