@@ -30,6 +30,7 @@ void readLinked(struct student_details_linked **root);
 
 /* declaring functions for binary mode */
 void newStudentBinary(struct student_details_binary **root);
+void passStudentBinary(struct student_details_binary **root, char *student_name, int student_number);
 void deleteBinary(struct student_details_binary **root);
 int searchDeleteBinary(struct student_details_binary **current, struct student_details_binary **previous, char student_name[100], int found);
 void deleteAllBinary(struct student_details_binary **root);
@@ -169,6 +170,7 @@ int main(int argc, char *argv[])
                 break;
 
                 case 6:
+                printf("%d", root);
                 readBinary(&root);
                 break;
                 
@@ -401,7 +403,7 @@ void saveLinked(struct student_details_linked **root)
     printf("\nPlease input your file name\n");
     scanf("%s",&file_name);
     
-    FILE * file = fopen(file_name, "wb"); 
+    FILE *file = fopen(file_name, "wb"); 
 
 	while(current != NULL)
 	{
@@ -442,7 +444,7 @@ void readLinked(struct student_details_linked **root)
     printf("\nPlease input the file you want to read.\n");
     scanf("%s",&file_name);
 
-    FILE * file = fopen(file_name, "rb"); 
+    FILE *file = fopen(file_name, "rb"); 
 
     if (file != NULL)
     {
@@ -530,6 +532,81 @@ void newStudentBinary(struct student_details_binary **root)
        {
            previous->left=new;
        }
+    }
+}
+
+/* same as above - but takes student name and number as arguments */
+void passStudentBinary(struct student_details_binary **root, char *student_name, int student_number)
+{
+	struct student_details_binary *current;
+	struct student_details_binary *previous = NULL;
+	struct student_details_binary *new;
+
+    printf("TK: passed to function %s\n", student_name);
+    current = *root;
+
+    /* taking input for new entry from user */
+	new = malloc(sizeof(struct student_details_binary));
+    strcpy(new->student_name, student_name);
+	new->student_number = student_number;
+    new->right = NULL;
+    new->left = NULL;
+    printf("TK: new student: %s\n", new->student_name);
+    printf("TK: %d\n", new->student_number);
+
+	if(*root == NULL) /* runs if root has no value */ 
+	{
+	    *root = new;
+        return;
+    } 
+	else	
+	{
+        /* iterates through list until either: the last element is reached, 
+         * or until the strcmp gives a positive value (meaning that the next 
+         * element is further down alphabetically  */
+        while(current != NULL) 
+        {
+            if(strcmp(current->student_name, new->student_name) < 0)
+            {
+                previous = current;
+                current = current->right;
+            }
+            else if(strcmp(current->student_name, new->student_name) == 0)
+            {
+                printf("\nA student with that name already exists!\n");
+                free(new);
+                return;
+            }
+            else if(strcmp(current->student_name, new->student_name) > 0)
+            {
+                previous = current;
+                current = current->left;
+            }
+        }
+
+       if(strcmp(previous->student_name, new->student_name) < 0)
+       {
+           previous->right=new;
+       }
+       else 
+       {
+           previous->left=new;
+       }
+    }
+}
+
+void inorderBinary(struct student_details_binary **root)
+{
+    struct student_details_binary *current;
+
+	if (current == NULL)
+	{
+        return;
+	}
+    else
+    {
+        printAllBinary(&current->left);
+        printAllBinary(&current->right);
     }
 }
 
@@ -662,6 +739,7 @@ void deleteBinary(struct student_details_binary **root)
     }
 }
 
+/* recursive search function for deletion */
 int searchDeleteBinary(struct student_details_binary **current, struct student_details_binary **previous, char student_name[100], int found)
 {
     struct student_details_binary *smallest;
@@ -756,6 +834,20 @@ int searchDeleteBinary(struct student_details_binary **current, struct student_d
     }
 }
 
+/* deletes all students in binary tree */
+void deleteAllBinary(struct student_details_binary **current)
+{
+    if(*current == NULL)
+    {
+        return;
+    }
+    deleteAllBinary(&((*current)->left));
+    deleteAllBinary(&((*current)->right));
+    printf("TK: Deleting %s\n", (*current)->student_name);
+    free(*current);
+}
+
+/* asks for file name then calls recursive save function */
 void saveBinary(struct student_details_binary **root)
 {
     char file_name[50];
@@ -770,6 +862,8 @@ void saveBinary(struct student_details_binary **root)
      fclose(file);
 }
 
+/* recursively goes through database and writes students to file in preorder
+ * traversal */
 void saveSearchBinary(struct student_details_binary **current, FILE **file)
 {
 	if (*current == NULL)
@@ -783,6 +877,57 @@ void saveSearchBinary(struct student_details_binary **current, FILE **file)
     saveSearchBinary(&(*current)->right, &(*file));
 }
 
+/* reads file and passes each fread to add new student function */
 void readBinary(struct student_details_binary **root)
 {
+    int i;
+    int what_do=0;
+    char file_name[50];
+    char student_name[100];
+    struct student_details_binary *current;
+    struct student_details_binary *previous;
+
+    printf("\nWould you like to save?\n"
+           "1.Yes\n2.No\n");
+    scanf("%d",&what_do);
+
+    switch(what_do)
+    {
+        case 1:
+            saveBinary(&*root);
+            deleteAllBinary(&*root);
+        break;
+        case 2:
+            deleteAllBinary(&*root);
+        break;
+    } 
+
+    printf("\nPlease input the file you want to read.\n");
+    scanf("%s",&file_name);
+
+    FILE *file = fopen(file_name, "rb"); 
+
+    if (file != NULL)
+    {
+        current = malloc(sizeof(struct student_details_binary));
+        
+        while(fread(current, sizeof(struct student_details_binary), 1, file))
+        {
+            printf("TK: %s\n",current->student_name);
+            printf("TK: %d\n",current->student_number);
+            strcpy(student_name,current->student_name);
+            passStudentBinary(&(*root),student_name, current->student_number);
+        }
+        
+        free(current);  
+    }
+
+    else
+    {
+        printf("\nNo file found\n");
+        fclose(file);
+        return;
+    }
+
+    fclose(file);
 }
