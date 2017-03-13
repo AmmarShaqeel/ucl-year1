@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include<string.h>
+#include <math.h>
 
 /* structure for student details */
 struct student_details_linked
@@ -47,6 +48,8 @@ int main(int argc, char *argv[])
 	int what_do;
 	int exit = 0;
     char mode[6];
+    char student_name[100];
+    int student_number;
 
     /* checks if user inputed a valid argument, and if not
      * then asks user to choose mode */
@@ -195,6 +198,7 @@ void newStudentLinked(struct student_details_linked **root)
 	struct student_details_linked *new;
 
     current = *root;
+
     /* taking input for new entry from user */
 	new = malloc(sizeof(struct student_details_linked));
 	fpurge(stdin); 
@@ -637,7 +641,7 @@ void rightRotateBinary(struct student_details_binary **root)
     free(left);
 }
 
-void rightRotateBinary(struct student_details_binary **root)
+void leftRotateBinary(struct student_details_binary **root)
 {
     struct student_details_binary *temp;
     struct student_details_binary *current;
@@ -682,19 +686,25 @@ void rightRotateBinary(struct student_details_binary **root)
 void balanceBinary(struct student_details_binary **root)
 {
     struct student_details_binary *current;
-    int num_nodes, expected;
+    int num_nodes, expected, i;
 
     current = *root;
 
-	while (current != NULL)
-	{
+    while (current != NULL)
+    {
         while(current->left != NULL)
         {
             rightRotateBinary(&current);
         }
         current = current->right;
         num_nodes++;
-	}
+    }
+    expected = num_nodes - (2^(floor(log2(num_nodes+1))) - 1);
+    for(i=0; i<expected; i++)
+    {
+        leftRotateBinary(current);
+        current = current->right;
+    }
 }
 
 /* prints a specfic student 
