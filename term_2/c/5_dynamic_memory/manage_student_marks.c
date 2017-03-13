@@ -595,19 +595,64 @@ void passStudentBinary(struct student_details_binary **root, char *student_name,
     }
 }
 
-void inorderBinary(struct student_details_binary **root)
+void rightRotateBinary(struct student_details_binary **root)
+{
+    struct student_details_binary *temp;
+    struct student_details_binary *current;
+    struct student_details_binary *left;
+
+    /* checks if node that was passed was null or had no
+     * left children */
+    if(*root == NULL || *root->left == NULL)
+    {
+        return;
+    }
+
+    /* assigns pointers to make code more readable */
+    current = *root;
+    left = current->left;
+
+    temp = malloc(sizeof(struct student_details_binary));
+
+    /* copies info from org node to temp */
+    strcpy(temp->student_name, current->student_name);
+    temp->student_number, current->student_number;
+
+    /* copies info from left node to org node */
+    strcpy(current->student_name,left->student_name);
+    current->student_number,left->student_number;
+
+    /* copeis info from temp to left node */
+    strcpy(left->student_name, temp->student_name);
+    left->student_number, temp->student_number;
+
+    /* moves temp between the org and right 
+     * and saves value of left's left*/
+    temp->left = left->right; 
+    temp->right = current->right;
+    current->left = left->left;
+    current->right = temp;
+
+    /* frees old left value */
+    free(left);
+}
+    
+void balanceBinary(struct student_details_binary **root)
 {
     struct student_details_binary *current;
+    int num_nodes, expected;
 
-	if (current == NULL)
+    current = *root;
+
+	while (current != NULL)
 	{
-        return;
+        while(current->left != NULL)
+        {
+            rightRotateBinary(&current);
+        }
+        current = current->right;
+        num_nodes++;
 	}
-    else
-    {
-        printAllBinary(&current->left);
-        printAllBinary(&current->right);
-    }
 }
 
 /* prints a specfic student 
