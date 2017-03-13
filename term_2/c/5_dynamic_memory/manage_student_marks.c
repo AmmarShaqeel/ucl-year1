@@ -636,6 +636,48 @@ void rightRotateBinary(struct student_details_binary **root)
     /* frees old left value */
     free(left);
 }
+
+void leftRotateBinary(struct student_details_binary **root)
+{
+    struct student_details_binary *temp;
+    struct student_details_binary *current;
+    struct student_details_binary *right;
+
+    /* checks if node that was passed was null or had no
+     * right children */
+    if(*root == NULL || *root->right == NULL)
+    {
+        return;
+    }
+
+    /* assigns pointers to make code more readable */
+    current = *root;
+    right = current->right;
+
+    temp = malloc(sizeof(struct student_details_binary));
+
+    /* copies info from org node to temp */
+    strcpy(temp->student_name, current->student_name);
+    temp->student_number, current->student_number;
+
+    /* copies info from right node to org node */
+    strcpy(current->student_name,right->student_name);
+    current->student_number,right->student_number;
+
+    /* copies info from temp to right node */
+    strcpy(right->student_name, temp->student_name);
+    right->student_number, temp->student_number;
+
+    /* moves temp between the org and right 
+     * and saves value of right's right*/
+    temp->right = right->right; 
+    temp->right = current->right;
+    current->right = right->right;
+    current->right = temp;
+
+    /* frees old right value */
+    free(right);
+}
     
 void balanceBinary(struct student_details_binary **root)
 {
