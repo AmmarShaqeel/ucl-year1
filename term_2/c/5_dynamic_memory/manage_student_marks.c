@@ -21,35 +21,33 @@ struct student_details_binary
 
 
 /* declaring functions for linked mode */
-void newStudentLinked(struct student_details_linked **root);
-void deleteLinked(struct student_details_linked **root);
+void newStudentLinked(struct student_details_linked **root, char *student_name, int student_number);
+void deleteLinked(struct student_details_linked **root, char *student_name);
 void deleteAllLinked(struct student_details_linked **root);
-void printLinked(struct student_details_linked **root);
+void printLinked(struct student_details_linked **root, char *student_name);
 void printAllLinked(struct student_details_linked **root);
 void saveLinked(struct student_details_linked **root);
 void readLinked(struct student_details_linked **root);
 
 /* declaring functions for binary mode */
-void newStudentBinary(struct student_details_binary **root);
-void passStudentBinary(struct student_details_binary **root, char *student_name, int student_number);
+void newStudentBinary(struct student_details_binary **root, char *student_name, int student_number);
 void deleteBinary(struct student_details_binary **root);
 int searchDeleteBinary(struct student_details_binary **current, struct student_details_binary **previous, char student_name[100], int found);
 void deleteAllBinary(struct student_details_binary **root);
 void printBinary(struct student_details_binary **root);
 int printSearchBinary(struct student_details_binary **current, char student_name[100], int found);
 void printAllBinary(struct student_details_binary **root);
-void saveBinary(struct student_details_binary **root);
-void saveSearchBinary(struct student_details_binary **current, FILE **file);
+void saveBinary(struct student_details_binary **current, FILE **file);
 void readBinary(struct student_details_binary **root);
 
 
 int main(int argc, char *argv[])
 {
-	int what_do;
+	int what_do, student_number;
+    char mode[6], student_name[100], char file_name[50];
 	int exit = 0;
-    char mode[6];
-    char student_name[100];
-    int student_number;
+    struct student_details_linked *root = NULL;	
+    FILE *file;
 
     /* checks if user inputed a valid argument, and if not
      * then asks user to choose mode */
@@ -80,7 +78,6 @@ int main(int argc, char *argv[])
      * until user quits */
     if(strcmp(mode,"linked")==0)
     {
-	    struct student_details_linked *root = NULL;	
 	    while(exit == 0)
 	    {
             fpurge(stdin); /* purge input in case user tried to input
@@ -98,16 +95,24 @@ int main(int argc, char *argv[])
 	    	switch(what_do)
 	    	{
 	    		case 1:
-	    		newStudentLinked(&root);
+                printf("Please input the new student's name\n");
+                scanf("%s",&student_name);
+                printf("Please input the new student's number\n");
+                scanf("%d",&student_number);
+	    		newStudentLinked(&root,student_name);
 	    		break;
 	    		
 	    		case 2:
-                deleteLinked(&root);
-                printf("%d",root);
+                printf("Please input the new student's name\n");
+                scanf("%s",&student_name);
+                deleteLinked(&root, student_name);
+                printf("TK: %d\n",root);
 	    		break;
 
 	    		case 3:
-                printLinked(&root);
+                printf("Please input the new student's name\n");
+                scanf("%s",&student_name);
+                printLinked(&root, student_name);
 	    		break;
 
 	    		case 4:
@@ -135,7 +140,6 @@ int main(int argc, char *argv[])
     /* same as above but for binary */
     else if(strcmp(mode, "binary")==0)
     {
-	    struct student_details_binary *root = NULL;	
 	    while(exit == 0)
 	    {
             fpurge(stdin); /* purge input in case user tried to input
@@ -162,6 +166,18 @@ int main(int argc, char *argv[])
 
                 case 3:
                 printBinary(&root);
+                if(*root == NULL)
+                {
+                    printf("Please enter some students first!\n");
+                }
+                fpurge(stdin); 
+                printf("Please enter the name of the student you would like to display\n");
+                scanf("%s",&student_name);
+                found = printSearchBinary(&*root, student_name, found); 
+                if(found == 0)
+                {
+                    printf("\nNo students found\n");
+                }
                 break;
 
                 case 4:
@@ -169,7 +185,13 @@ int main(int argc, char *argv[])
                 break;
 
                 case 5:
-                saveBinary(&root);
+                printf("\nPlease input your file name\n");
+                scanf("%s",&file_name);
+
+                *file = fopen(file_name, "wb"); 
+                saveBinary(&(*root), &file);
+
+                fclose(file);
                 break;
 
                 case 6:
@@ -481,66 +503,7 @@ void readLinked(struct student_details_linked **root)
 
 /* adds a new binary students - sorted alphabetically
  * doesn't allow addition of students with the same name */
-void newStudentBinary(struct student_details_binary **root)
-{
-	struct student_details_binary *current;
-	struct student_details_binary *previous = NULL;
-	struct student_details_binary *new;
-
-    current = *root;
-    /* taking input for new entry from user */
-	new = malloc(sizeof(struct student_details_binary));
-	fpurge(stdin); 
-	printf("Please input the new student's name\n");
-	scanf("%s",&new->student_name);
-	printf("Please input the new student's number\n");
-	scanf("%d",&new->student_number);
-    new->right = NULL;
-    new->left = NULL;
-
-	if(*root == NULL) /* runs if root has no value */ 
-	{
-	    *root = new;
-        return;
-    } 
-	else	
-	{
-        /* iterates through list until either: the last element is reached, 
-         * or until the strcmp gives a positive value (meaning that the next 
-         * element is further down alphabetically  */
-        while(current != NULL) 
-        {
-            if(strcmp(current->student_name, new->student_name) < 0)
-            {
-                previous = current;
-                current = current->right;
-            }
-            else if(strcmp(current->student_name, new->student_name) == 0)
-            {
-                printf("\nA student with that name already exists!\n");
-                free(new);
-                return;
-            }
-            else if(strcmp(current->student_name, new->student_name) > 0)
-            {
-                previous = current;
-                current = current->left;
-            }
-        }
-
-       if(strcmp(previous->student_name, new->student_name) < 0)
-       {
-           previous->right=new;
-       }
-       else 
-       {
-           previous->left=new;
-       }
-    }
-}
-
-/* same as above - but takes student name and number as arguments */
-void passStudentBinary(struct student_details_binary **root, char *student_name, int student_number)
+void newStudentBinary(struct student_details_binary **root, char *student_name, int student_number)
 {
 	struct student_details_binary *current;
 	struct student_details_binary *previous = NULL;
@@ -714,21 +677,6 @@ void printBinary(struct student_details_binary **root)
     char student_name[100];
     int found = 0; 
 
-    if(*root == NULL)
-    {
-        printf("Please enter some students first!\n");
-        return;
-    }
-
-    fpurge(stdin); 
-    printf("Please enter the name of the student you would like to display\n");
-    scanf("%s",&student_name);
-    found = printSearchBinary(&*root, student_name, found); 
-
-    if(found == 0)
-    {
-        printf("\nNo students found\n");
-    }
 }
 
 /* recursively searches for a student - and if found prints student */
@@ -944,24 +892,9 @@ void deleteAllBinary(struct student_details_binary **current)
     free(*current);
 }
 
-/* asks for file name then calls recursive save function */
-void saveBinary(struct student_details_binary **root)
-{
-    char file_name[50];
-    
-    printf("\nPlease input your file name\n");
-    scanf("%s",&file_name);
-    
-    FILE *file = fopen(file_name, "wb"); 
-
-    saveSearchBinary(&(*root), &file);
-
-     fclose(file);
-}
-
 /* recursively goes through database and writes students to file in preorder
  * traversal */
-void saveSearchBinary(struct student_details_binary **current, FILE **file)
+void saveBinary(struct student_details_binary **current, FILE **file)
 {
 	if (*current == NULL)
     {
