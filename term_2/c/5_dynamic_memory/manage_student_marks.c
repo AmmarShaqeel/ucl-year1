@@ -735,7 +735,7 @@ void deleteBinary(struct student_details_binary **root)
     scanf("%s",&student_name);
 
     /* runs if root needs to be reassigned */
-    if( strcmp((*root)->student_name, student_name) == 0)
+    if(strcmp((*root)->student_name, student_name) == 0)
     {
         /* if root node has no children */
         if((*root)->right == NULL && (*root)-> left == NULL)
@@ -849,7 +849,7 @@ int searchDeleteBinary(struct student_details_binary **current, struct student_d
             else if( (*current)->right != NULL && (*current)->left != NULL)
             {
 
-                smallest = (*current)->left;
+                smallest = (*current)->right;
                 smallest_previous = (*current);
 
                 while(smallest->left != NULL)
@@ -862,7 +862,14 @@ int searchDeleteBinary(struct student_details_binary **current, struct student_d
 
                 strcpy((*current)->student_name,smallest->student_name);
                 (*current)->student_number = smallest->student_number;
-                smallest_previous->left = NULL;
+                if(smallest_previous == (*current))
+                {
+                    (*current)->right = NULL;
+                }
+                else
+                {
+                    smallest_previous->left = NULL;
+                }
 
                 free(smallest);
                 return found;
@@ -912,7 +919,7 @@ void readBinary(struct student_details_binary **root, FILE **file)
 
     printf("All unsaved changes will be lost."
             "Would you you like to continue?"
-            "\n1.Yes\n2.No");
+            "\n1.Yes\n2.No\n");
     scanf("%d",&what_do);
 
     switch(what_do)
