@@ -22,20 +22,19 @@ struct student_details_binary
 
 /* declaring functions for linked mode */
 void newStudentLinked(struct student_details_linked **root, char *student_name, int student_number);
-void deleteLinked(struct student_details_linked **root, char *student_name);
+void deleteLinked(struct student_details_linked **root, char student_name[100]);
 void deleteAllLinked(struct student_details_linked **root);
 void printLinked(struct student_details_linked **root, char *student_name);
 void printAllLinked(struct student_details_linked **root);
-void saveLinked(struct student_details_linked **root);
-void readLinked(struct student_details_linked **root);
+void saveLinked(struct student_details_linked **root, FILE **file);
+void readLinked(struct student_details_linked **root, char *file_name);
 
 /* declaring functions for binary mode */
 void newStudentBinary(struct student_details_binary **root, char *student_name, int student_number);
 void deleteBinary(struct student_details_binary **root);
 int searchDeleteBinary(struct student_details_binary **current, struct student_details_binary **previous, char student_name[100], int found);
 void deleteAllBinary(struct student_details_binary **root);
-void printBinary(struct student_details_binary **root);
-int printSearchBinary(struct student_details_binary **current, char student_name[100], int found);
+int printBinary(struct student_details_binary **current, char student_name[100], int found);
 void printAllBinary(struct student_details_binary **root);
 void saveBinary(struct student_details_binary **current, FILE **file);
 void readBinary(struct student_details_binary **root);
@@ -99,7 +98,7 @@ int main(int argc, char *argv[])
                 scanf("%s",&student_name);
                 printf("Please input the new student's number\n");
                 scanf("%d",&student_number);
-	    		newStudentLinked(&root,student_name);
+	    		newStudentLinked(&root,student_name, student_number);
 	    		break;
 	    		
 	    		case 2:
@@ -157,7 +156,11 @@ int main(int argc, char *argv[])
             switch(what_do)
             {
                 case 1:
-                newStudentBinary(&root);
+                printf("Please input the new student's name\n");
+                scanf("%s",&student_name);
+                printf("Please input the new student's number\n");
+                scanf("%d",&student_number);
+                newStudentBinary(&root, student_name, student_number);
                 break;
                 
                 case 2:
@@ -213,7 +216,7 @@ int main(int argc, char *argv[])
 }
 
 /* adds a student to linked list - sorted alphabetically */
-void newStudentLinked(struct student_details_linked **root)
+void newStudentLinked(struct student_details_linked **root, char student_name[100], int student_number)
 {
 	struct student_details_linked *current;
 	struct student_details_linked *previous = NULL;
@@ -503,7 +506,7 @@ void readLinked(struct student_details_linked **root)
 
 /* adds a new binary students - sorted alphabetically
  * doesn't allow addition of students with the same name */
-void newStudentBinary(struct student_details_binary **root, char *student_name, int student_number)
+void newStudentBinary(struct student_details_binary **root, char student_name[100], int student_number)
 {
 	struct student_details_binary *current;
 	struct student_details_binary *previous = NULL;
@@ -668,19 +671,16 @@ void balanceBinary(struct student_details_binary **root)
         leftRotateBinary(current);
         current = current->right;
     }
-}
-
-/* prints a specfic student 
- * checks if root is null, if not then calls a recursive search function */
-void printBinary(struct student_details_binary **root)
-{
-    char student_name[100];
-    int found = 0; 
-
+    current = *root;
+    while(current->right != NULL)
+    {
+        leftRotateBinary(current);
+        current = current->right;
+    }
 }
 
 /* recursively searches for a student - and if found prints student */
-int printSearchBinary(struct student_details_binary **current, char
+int printBinary(struct student_details_binary **current, char
         student_name[100], int found)
 {
 	if (*current == NULL)
