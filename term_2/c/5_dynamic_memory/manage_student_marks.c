@@ -21,31 +21,33 @@ struct student_details_binary
 
 
 /* declaring functions for linked mode */
-void newStudentLinked(struct student_details_linked **root, char *student_name, int student_number);
+void newStudentLinked(struct student_details_linked **root, char student_name[100], int student_number);
 void deleteLinked(struct student_details_linked **root, char student_name[100]);
 void deleteAllLinked(struct student_details_linked **root);
-void printLinked(struct student_details_linked **root, char *student_name);
+void printLinked(struct student_details_linked **root, char student_name[100]);
 void printAllLinked(struct student_details_linked **root);
 void saveLinked(struct student_details_linked **root, FILE **file);
-void readLinked(struct student_details_linked **root, char *file_name);
+void readLinked(struct student_details_linked **root, FILE **file);
 
 /* declaring functions for binary mode */
-void newStudentBinary(struct student_details_binary **root, char *student_name, int student_number);
+void newStudentBinary(struct student_details_binary **root, char student_name[100], int student_number);
 void deleteBinary(struct student_details_binary **root);
 int searchDeleteBinary(struct student_details_binary **current, struct student_details_binary **previous, char student_name[100], int found);
 void deleteAllBinary(struct student_details_binary **root);
+void rightRotateBinary(struct student_details_binary **root);
+void leftRotateBinary(struct student_details_binary **root);
+void balanceBinary(struct student_details_binary **root);
 int printBinary(struct student_details_binary **current, char student_name[100], int found);
 void printAllBinary(struct student_details_binary **root);
 void saveBinary(struct student_details_binary **current, FILE **file);
-void readBinary(struct student_details_binary **root);
+void readBinary(struct student_details_binary **root, FILE **file);
 
 
 int main(int argc, char *argv[])
 {
 	int what_do, student_number;
-    char mode[6], student_name[100], char file_name[50];
-	int exit = 0;
-    struct student_details_linked *root = NULL;	
+    char mode[6], student_name[100], file_name[50];
+	int exit = 0, found = 0;
     FILE *file;
 
     /* checks if user inputed a valid argument, and if not
@@ -77,13 +79,14 @@ int main(int argc, char *argv[])
      * until user quits */
     if(strcmp(mode,"linked")==0)
     {
+        struct student_details_linked *root = NULL;	
 	    while(exit == 0)
 	    {
             fpurge(stdin); /* purge input in case user tried to input
                               invalid characters, e.g. arrow key up in cmd */
 	    	what_do = 0;  /*  reset what_do (again in case user
                               input invalid characters) */
-	    	printf("\nType your option:"
+	    	printf("\nLINKED MODE\nType your option:"
             "\n1: Introduce new student\n2: Remove student\n"
             "3: Print student report\n4: Print report for all students\n"
             "5: Save to file\n6: Retrieve data from file\n7: Exit\n");
@@ -94,44 +97,63 @@ int main(int argc, char *argv[])
 	    	switch(what_do)
 	    	{
 	    		case 1:
-                printf("Please input the new student's name\n");
-                scanf("%s",&student_name);
-                printf("Please input the new student's number\n");
-                scanf("%d",&student_number);
-	    		newStudentLinked(&root,student_name, student_number);
+                    printf("Please input the new student's name\n");
+                    scanf("%s",&student_name);
+                    printf("Please input the new student's number\n");
+                    scanf("%d",&student_number);
+                    newStudentLinked(&root,student_name, student_number);
 	    		break;
 	    		
 	    		case 2:
-                printf("Please input the new student's name\n");
-                scanf("%s",&student_name);
-                deleteLinked(&root, student_name);
-                printf("TK: %d\n",root);
+                    printf("Please input the student you would like to delete.\n");
+                    scanf("%s",&student_name);
+                    deleteLinked(&root, student_name);
+                    printf("TK: %d\n",root);
 	    		break;
 
 	    		case 3:
-                printf("Please input the new student's name\n");
-                scanf("%s",&student_name);
-                printLinked(&root, student_name);
+                    if(root == NULL)
+                    {
+                        printf("Please enter some students first!\n");
+                        break;
+                    }
+
+                    printf("Please input the student you would like to print\n");
+                    scanf("%s",&student_name);
+                    printLinked(&root, student_name);
 	    		break;
 
 	    		case 4:
-                printAllLinked(&root);
+                    printAllLinked(&root);
 	    		break;
 
 	    		case 5:
-                saveLinked(&root);
+                    printf("\nPlease input your file name\n");
+                    scanf("%s",&file_name);
+                    file = fopen(file_name, "wb"); 
+
+                    saveLinked(&root, &file);
+
+                    fclose(file);
 	    		break;
 
 	    		case 6:
-                readLinked(&root);
+                    printf("TK: %d\n", root);
+                    printf("\nPlease input the file you want to read.\n");
+                    scanf("%s",&file_name);
+                    file = fopen(file_name, "rb"); 
+
+                    readLinked(&root, &file);
+                    
+                    fclose(file);
 	    		break;
 	    		
 	    		case 7:
-	    		exit = 1;
+                    exit = 1;
 	    		break;
 	    	
 	    		default:
-	    		printf("Input not recognised\n\n");
+                    printf("Input not recognised\n\n");
 	    		break;	
 	    	}
         }
@@ -139,13 +161,15 @@ int main(int argc, char *argv[])
     /* same as above but for binary */
     else if(strcmp(mode, "binary")==0)
     {
+        struct student_details_binary *root = NULL;	
+
 	    while(exit == 0)
 	    {
             fpurge(stdin); /* purge input in case user tried to input
                               invalid characters, e.g. arrow key up in cmd */
 	    	what_do = 0;  /*  reset what_do (again in case user
                               input invalid characters) */
-	    	printf("\nType your option:"
+	    	printf("\nBINARY MODE\nType your option:"
             "\n1: Introduce new student\n2: Remove student\n"
             "3: Print student report\n4: Print report for all students\n"
             "5: Save to file\n6: Retrieve data from file\n7: Exit\n");
@@ -156,58 +180,67 @@ int main(int argc, char *argv[])
             switch(what_do)
             {
                 case 1:
-                printf("Please input the new student's name\n");
-                scanf("%s",&student_name);
-                printf("Please input the new student's number\n");
-                scanf("%d",&student_number);
-                newStudentBinary(&root, student_name, student_number);
+                    printf("Please input the new student's name\n");
+                    scanf("%s",&student_name);
+                    printf("Please input the new student's number\n");
+                    scanf("%d",&student_number);
+                    newStudentBinary(&root, student_name, student_number);
                 break;
                 
                 case 2:
-                deleteBinary(&root);
+                    deleteBinary(&root);
                 break;
 
                 case 3:
-                printBinary(&root);
-                if(*root == NULL)
-                {
-                    printf("Please enter some students first!\n");
-                }
-                fpurge(stdin); 
-                printf("Please enter the name of the student you would like to display\n");
-                scanf("%s",&student_name);
-                found = printSearchBinary(&*root, student_name, found); 
-                if(found == 0)
-                {
-                    printf("\nNo students found\n");
-                }
+                    if(root == NULL)
+                    {
+                        printf("Please enter some students first!\n");
+                        break;
+                    }
+
+                    fpurge(stdin); 
+                    printf("Please enter the name of the student you would like to display\n");
+                    scanf("%s",&student_name);
+
+                    found = printBinary(&root, student_name, found); 
+
+                    if(found == 0)
+                    {
+                        printf("\nNo students found\n");
+                    }
                 break;
 
                 case 4:
-                printAllBinary(&root);
+                    printAllBinary(&root);
                 break;
 
                 case 5:
-                printf("\nPlease input your file name\n");
-                scanf("%s",&file_name);
+                    printf("\nPlease input your file name\n");
+                    scanf("%s",&file_name);
+                    file = fopen(file_name, "wb"); 
 
-                *file = fopen(file_name, "wb"); 
-                saveBinary(&(*root), &file);
+                    saveBinary(&root, &file);
 
-                fclose(file);
+                    fclose(file);
                 break;
 
                 case 6:
-                printf("%d", root);
-                readBinary(&root);
+                    printf("TK: %d\n", root);
+                    printf("\nPlease input the file you want to read.\n");
+                    scanf("%s",&file_name);
+                    file = fopen(file_name, "rb"); 
+
+                    readBinary(&root, &file);
+
+                    fclose(file);
                 break;
                 
                 case 7:
-                exit = 1;
+                    exit = 1;
                 break;
             
                 default:
-                printf("Input not recognised\n\n");
+                    printf("Input not recognised\n\n");
                 break;	
             }
         }
@@ -226,11 +259,8 @@ void newStudentLinked(struct student_details_linked **root, char student_name[10
 
     /* taking input for new entry from user */
 	new = malloc(sizeof(struct student_details_linked));
-	fpurge(stdin); 
-	printf("Please input the new student's name\n");
-	scanf("%s",&new->student_name);
-	printf("Please input the new student's number\n");
-	scanf("%d",&new->student_number);
+	strcpy(new->student_name, student_name);
+	new->student_number = student_number;
     new->next = NULL;
 
 	if(*root == NULL) /* runs if root has no value */ 
@@ -278,11 +308,10 @@ void newStudentLinked(struct student_details_linked **root, char student_name[10
 }
 
 /* deletes a user by searching for student name */
-void deleteLinked(struct student_details_linked **root)
+void deleteLinked(struct student_details_linked **root, char student_name[100])
 {
     struct student_details_linked *current;
     struct student_details_linked *previous = NULL;
-    char student_name[100];
 
     /* checks if root is null to stop errors  */
     if(*root == NULL)
@@ -352,12 +381,6 @@ void deleteAllLinked(struct student_details_linked **root)
 	struct student_details_linked *current;
 	struct student_details_linked *previous;
 
-    if(*root == NULL)
-    {
-        printf("No changes to save!\n");
-        return;
-    }
-
 	current = *root;
     *root = NULL;
     while(current != NULL)
@@ -369,23 +392,11 @@ void deleteAllLinked(struct student_details_linked **root)
 }
 
 /* prints a specific user's details by searching by name */
-void printLinked(struct student_details_linked **root)
+void printLinked(struct student_details_linked **root, char student_name[100])
 {
     struct student_details_linked *current;
-    char student_name[100];
-
-    /* checks if root is null to stop errors  */
-    if(*root == NULL)
-    {
-        printf("Please enter some students first!\n");
-        return;
-    }
 
 	current = *root;
-
-	fpurge(stdin); 
-    printf("Please enter the name of the student you would like to display\n");
-    scanf("%s",&student_name);
 
     while(current->next != NULL && strcmp(current->student_name,student_name)
             != 0)
@@ -422,65 +433,51 @@ void printAllLinked(struct student_details_linked **root)
 }
 
 /* asks for file name then saves to that file */
-void saveLinked(struct student_details_linked **root)
+void saveLinked(struct student_details_linked **root, FILE **file)
 {
-    char file_name[50];
 	struct student_details_linked *current;
 
 	current = *root;
     
-    printf("\nPlease input your file name\n");
-    scanf("%s",&file_name);
-    
-    FILE *file = fopen(file_name, "wb"); 
-
 	while(current != NULL)
 	{
-        fwrite(current, sizeof(struct student_details_linked), 1, file);
+        fwrite(current, sizeof(struct student_details_linked), 1, *file);
 	    current = current->next;
 	}
-     fclose(file);
 }
 
 /* asks for file name then reads from file
  * has check if user wasnts to save */
-void readLinked(struct student_details_linked **root)
+void readLinked(struct student_details_linked **root, FILE **file)
 {
     int i;
     int what_do=0;
-    char file_name[50];
 	struct student_details_linked *current;
 	struct student_details_linked *previous = NULL;
 
 	current = *root;
 
-    printf("\nWould you like to save?\n"
-           "1.Yes\n2.No\n");
+    printf("All unsaved changes will be lost."
+            "Would you you like to continue?"
+            "\n1.Yes\n2.No\n");
     scanf("%d",&what_do);
 
     switch(what_do)
     {
         case 1:
-            saveLinked(&*root);
             deleteAllLinked(&*root);
         break;
         case 2:
-            deleteAllLinked(&*root);
+            return;
         break;
     }
 
-    
-    printf("\nPlease input the file you want to read.\n");
-    scanf("%s",&file_name);
-
-    FILE *file = fopen(file_name, "rb"); 
-
-    if (file != NULL)
+    if (*file != NULL)
     {
         current = malloc(sizeof(struct student_details_linked));
         *root = current;
         
-        while(fread(current, sizeof(struct student_details_linked), 1, file))
+        while(fread(current, sizeof(struct student_details_linked), 1, *file))
         {
             i = 1;
             current->next = malloc(sizeof(struct student_details_linked));
@@ -497,11 +494,8 @@ void readLinked(struct student_details_linked **root)
     else
     {
         printf("No file found");
-        fclose(file);
         return;
     }
-
-    fclose(file);
 }
 
 /* adds a new binary students - sorted alphabetically
@@ -573,7 +567,7 @@ void rightRotateBinary(struct student_details_binary **root)
 
     /* checks if node that was passed was null or had no
      * left children */
-    if(*root == NULL || *root->left == NULL)
+    if(*root == NULL || (*root)->left == NULL)
     {
         return;
     }
@@ -615,7 +609,7 @@ void leftRotateBinary(struct student_details_binary **root)
 
     /* checks if node that was passed was null or had no
      * right children */
-    if(*root == NULL || *root->right == NULL)
+    if(*root == NULL || (*root)->right == NULL)
     {
         return;
     }
@@ -665,16 +659,16 @@ void balanceBinary(struct student_details_binary **root)
         current = current->right;
         num_nodes++;
     }
-    expected = num_nodes - (2^(floor(log2(num_nodes+1))) - 1);
+    expected = num_nodes - pow(2,(floor(log2(num_nodes+1))) - 1);
     for(i=0; i<expected; i++)
     {
-        leftRotateBinary(current);
+        leftRotateBinary(&current);
         current = current->right;
     }
     current = *root;
     while(current->right != NULL)
     {
-        leftRotateBinary(current);
+        leftRotateBinary(&current);
         current = current->right;
     }
 }
@@ -696,8 +690,8 @@ int printBinary(struct student_details_binary **current, char
             printf("Student number is: %d\n\n", (*current)->student_number);  
             return found;
         }
-        found = printSearchBinary(&(*current)->left, student_name, found);
-        found = printSearchBinary(&(*current)->right, student_name, found);
+        found = printBinary(&(*current)->left, student_name, found);
+        found = printBinary(&(*current)->right, student_name, found);
     }
 }
 
@@ -903,50 +897,45 @@ void saveBinary(struct student_details_binary **current, FILE **file)
 
     fwrite(*current, sizeof(struct student_details_binary), 1, *file);
 
-    saveSearchBinary(&(*current)->left, &(*file));
-    saveSearchBinary(&(*current)->right, &(*file));
+    saveBinary(&(*current)->left, &(*file));
+    saveBinary(&(*current)->right, &(*file));
 }
 
 /* reads file and passes each fread to add new student function */
-void readBinary(struct student_details_binary **root)
+void readBinary(struct student_details_binary **root, FILE **file)
 {
     int i;
     int what_do=0;
-    char file_name[50];
     char student_name[100];
     struct student_details_binary *current;
     struct student_details_binary *previous;
 
-    printf("\nWould you like to save?\n"
-           "1.Yes\n2.No\n");
+    printf("All unsaved changes will be lost."
+            "Would you you like to continue?"
+            "\n1.Yes\n2.No");
     scanf("%d",&what_do);
 
     switch(what_do)
     {
         case 1:
-            saveBinary(&*root);
-            deleteAllBinary(&*root);
+            deleteAllBinary(&(*root));
         break;
         case 2:
-            deleteAllBinary(&*root);
+            return;
         break;
-    } 
+    }
 
-    printf("\nPlease input the file you want to read.\n");
-    scanf("%s",&file_name);
-
-    FILE *file = fopen(file_name, "rb"); 
 
     if (file != NULL)
     {
         current = malloc(sizeof(struct student_details_binary));
         
-        while(fread(current, sizeof(struct student_details_binary), 1, file))
+        while(fread(current, sizeof(struct student_details_binary), 1, *file))
         {
             printf("TK: %s\n",current->student_name);
             printf("TK: %d\n",current->student_number);
             strcpy(student_name,current->student_name);
-            passStudentBinary(&(*root),student_name, current->student_number);
+            newStudentBinary(&(*root),student_name, current->student_number);
         }
         
         free(current);  
@@ -955,9 +944,6 @@ void readBinary(struct student_details_binary **root)
     else
     {
         printf("\nNo file found\n");
-        fclose(file);
         return;
     }
-
-    fclose(file);
 }
