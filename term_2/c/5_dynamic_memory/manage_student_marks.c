@@ -185,7 +185,6 @@ int main(int argc, char *argv[])
                     scanf("%d",&student_number);
 
                     newStudentBinary(&root, student_name, student_number);
-                    balanceBinary(&root);
                 break;
                 
                 case 2:
@@ -581,85 +580,83 @@ void newStudentBinary(struct student_details_binary **root, char student_name[10
     }
 }
 
-void rightRotateBinary(struct student_details_binary **root)
+void rightRotateBinary(struct student_details_binary **current)
 {
     struct student_details_binary *temp;
-    struct student_details_binary *current;
+    struct student_details_binary *original;
     struct student_details_binary *left;
 
     /* checks if node that was passed was null or had no
      * left children */
-    if(*root == NULL || (*root)->left == NULL)
+    if(*current == NULL || (*current)->left == NULL)
     {
         return;
     }
 
-    /* assigns pointers to make code more readable */
-    current = *root;
-    left = current->left;
+    original = *current;
+    left = original->left;
 
     temp = malloc(sizeof(struct student_details_binary));
 
     /* copies info from org node to temp */
-    strcpy(temp->student_name, current->student_name);
-    temp->student_number, current->student_number;
+    strcpy(temp->student_name, original->student_name);
+    temp->student_number = original->student_number;
 
     /* copies info from left node to org node */
-    strcpy(current->student_name,left->student_name);
-    current->student_number,left->student_number;
+    strcpy(original->student_name,left->student_name);
+    original->student_number = left->student_number;
 
-    /* copeis info from temp to left node */
+    /* copies info from temp to left node */
     strcpy(left->student_name, temp->student_name);
     left->student_number, temp->student_number;
 
     /* moves temp between the org and right 
      * and saves value of left's left*/
     temp->left = left->right; 
-    temp->right = current->right;
-    current->left = left->left;
-    current->right = temp;
+    temp->right = original->right;
+    original->left = left->left;
+    original->right = temp;
 
     /* frees old left value */
     free(left);
 }
 
-void leftRotateBinary(struct student_details_binary **root)
+void leftRotateBinary(struct student_details_binary **current)
 {
     struct student_details_binary *temp;
-    struct student_details_binary *current;
+    struct student_details_binary *original;
     struct student_details_binary *right;
 
     /* checks if node that was passed was null or had no
      * right children */
-    if(*root == NULL || (*root)->right == NULL)
+    if(*current == NULL || (*current)->right == NULL)
     {
         return;
     }
 
-    /* assigns pointers to make code more readable */
-    current = *root;
-    right = current->right;
+    original = *current;
+    right = original->right;
 
     temp = malloc(sizeof(struct student_details_binary));
 
     /* copies info from org node to temp */
-    strcpy(temp->student_name, current->student_name);
-    temp->student_number, current->student_number;
+    strcpy(temp->student_name, original->student_name);
+    temp->student_number = original->student_number;
 
     /* copies info from right node to org node */
-    strcpy(current->student_name,right->student_name);
-    current->student_number,right->student_number;
+    strcpy(original->student_name,right->student_name);
+    original->student_number = right->student_number;
 
     /* copies info from temp to right node */
     strcpy(right->student_name, temp->student_name);
-    right->student_number, temp->student_number;
+    right->student_number = temp->student_number;
 
     /* moves temp between the org and left 
      * and saves value of right's right*/
     temp->right = right->left; 
-    temp->right = current->right;
-    current->right = right->right;
-    current->right = temp;
+    temp->left = original->left;
+    original->right = right->right;
+    original->left = temp;
 
     /* frees old right value */
     free(right);
@@ -685,9 +682,13 @@ void balanceBinary(struct student_details_binary **root)
         num_nodes++;
     }
     printf("TK: num nodes %d \n", num_nodes);
-
     expected = num_nodes - (pow(2,(floor(log2(num_nodes+1)))) - 1);
     printf("TK: expected floor nodes %d \n", expected);
+    printf("TK: current = %s\n", current ->student_name);
+    printf("TK: root = %s\n", (*root)->student_name);
+    return;
+
+    current = *root;
     for(i=0; i<expected; i++)
     {
         printf("TK: folding expected nodes\n");
@@ -699,7 +700,7 @@ void balanceBinary(struct student_details_binary **root)
     while(current->right != NULL)
     {
         printf("TK: folding odd nodes\n");
-        leftRotateBinary(&current);
+        leftRotateBinary(&(current->right));
         current = current->right;
     }
 }
@@ -930,7 +931,7 @@ void readBinary(struct student_details_binary **root, FILE **file)
     struct student_details_binary *previous;
 
     printf("All unsaved changes will be lost. "
-            "Would you you like to continue?"
+            "Would you like to continue?"
             "\n1.Yes\n2.No\n");
     scanf("%d",&what_do);
 
