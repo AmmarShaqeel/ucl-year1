@@ -31,8 +31,7 @@ void readLinked(struct student_details_linked **root, FILE **file);
 
 /* declaring functions for binary mode */
 void newStudentBinary(struct student_details_binary **root, char student_name[100], int student_number);
-void deleteBinary(struct student_details_binary **root);
-int searchDeleteBinary(struct student_details_binary **current, struct student_details_binary **previous, char student_name[100], int found);
+int deleteBinary(struct student_details_binary **root, struct student_details_binary **current, struct student_details_binary **previous, char student_name[100], int found);
 void deleteAllBinary(struct student_details_binary **root);
 void rightRotateBinary(struct student_details_binary **root);
 void leftRotateBinary(struct student_details_binary **root);
@@ -188,10 +187,29 @@ int main(int argc, char *argv[])
                 break;
                 
                 case 2:
-                    deleteBinary(&root);
+                    found = 0;
+
+                    if(root == NULL)
+                    {
+                        printf("Please enter some students first!\n");
+                        break;
+                    }
+
+                    fpurge(stdin); 
+                    printf("Please enter the name of the student you would like to delete\n");
+                    scanf("%s",&student_name);
+
+                    found = deleteBinary(&root, &root, NULL, student_name, found); 
+
+                    if(found == 0)
+                    {
+                        printf("\nNo matching students found\n");
+                    }
                 break;
 
                 case 3:
+                    found = 0;
+
                     if(root == NULL)
                     {
                         printf("Please enter some students first!\n");
@@ -628,17 +646,13 @@ void leftRotateBinary(struct student_details_binary **root)
     strcpy(current->student_name,right->student_name);
     current->student_number,right->student_number;
 
-<<<<<<< HEAD
     /* copies info from temp to right node */
-=======
-    /* copeis info from temp to right node */
->>>>>>> 62ce6fd5cde0a5f48143f5178ce0083ec9ebe027
     strcpy(right->student_name, temp->student_name);
     right->student_number, temp->student_number;
 
-    /* moves temp between the org and right 
+    /* moves temp between the org and left 
      * and saves value of right's right*/
-    temp->right = right->right; 
+    temp->right = right->left; 
     temp->right = current->right;
     current->right = right->right;
     current->right = temp;
@@ -719,75 +733,14 @@ void printAllBinary(struct student_details_binary **root)
     }
 }
 
-/* deletes a specific student
- * checks if root is null or needs to be deleted 
- * then calls recursive search function */
-void deleteBinary(struct student_details_binary **root)
-{
-    struct student_details_binary *current;
-    char student_name[100];
-    int found = 0;
-
-    if(*root == NULL)
-    {
-        printf("Please enter some students first!\n");
-        return;
-    }
-
-    fpurge(stdin); 
-    printf("Please enter the name of the student you would like to delete\n");
-    scanf("%s",&student_name);
-
-    /* runs if root needs to be reassigned */
-    if(strcmp((*root)->student_name, student_name) == 0)
-    {
-        /* if root node has no children */
-        if((*root)->right == NULL && (*root)-> left == NULL)
-        {
-            printf("TK: deleting\n");
-            free(*root);
-            *root = NULL;
-            return;
-        }
-
-        /* if root node has one child only */
-        else if( ((*root)->right == NULL && (*root)->left != NULL) ||
-                ((*root)->right != NULL && (*root)->left == NULL))
-        {
-            /* if node has left child */
-            if((*root)->right == NULL && (*root)->left != NULL)
-            {
-                current = *root;
-                *root = current->left;
-                free(current);
-                return;
-            }
-
-            /* if node has right child */
-            else if((*root)->right != NULL && (*root)->left == NULL)
-            {
-                current = *root;
-                *root = current->right;
-                free(current);
-                return;
-            }
-        }
-    }
-
-    found = searchDeleteBinary(&*root, NULL, student_name, found); 
-
-    if(found == 0)
-    {
-        printf("\nNo matching students found\n");
-    }
-}
-
 /* recursive search function for deletion */
-int searchDeleteBinary(struct student_details_binary **current, struct student_details_binary **previous, char student_name[100], int found)
+/* checks if root is null or needs to be deleted  */
+int deleteBinary(struct student_details_binary **root, struct student_details_binary **current, struct student_details_binary **previous, char student_name[100], int found)
 {
     struct student_details_binary *smallest;
     struct student_details_binary *smallest_previous;
-    printf(" running");
+    printf("TK: delete function running\n");
+    printf("TK: %d\n", previous);
 
 	if (*current == NULL)
 	{
@@ -797,12 +750,49 @@ int searchDeleteBinary(struct student_details_binary **current, struct student_d
     {
         if(strcmp((*current)->student_name, student_name) == 0)
         {
+            printf("TK: student found\n");
             found = 1;
+            /* runs if root needs to be reassigned */
+            if((previous) == NULL)
+            {
+                printf("TK: changing root\n");
+                /* if root node has no children */
+                if((*root)->right == NULL && (*root)-> left == NULL)
+                {
+                    printf("TK: deleting\n");
+                    free(*root);
+                    *root = NULL;
+                    return found;
+                }
+
+                /* if root node has one child only */
+                else if( ((*root)->right == NULL && (*root)->left != NULL) ||
+                        ((*root)->right != NULL && (*root)->left == NULL))
+                {
+                    /* if node has left child */
+                    if((*root)->right == NULL && (*root)->left != NULL)
+                    {
+                        *current = *root;
+                        *root = (*current)->left;
+                        free(current);
+                        return found;
+                    }
+
+                    /* if node has right child */
+                    else if((*root)->right != NULL && (*root)->left == NULL)
+                    {
+                        *current = *root;
+                        *root = (*current)->right;
+                        free(*current);
+                        return found;
+                    }
+                }
+            }
             /* if current node has no children */
             if((*current)->right == NULL && (*current)-> left == NULL)
             {
                 printf("TK: deleting");
-                if ((*previous)->right == *current)
+                if((*previous)->right == *current)
                 {
                     (*previous)->right = NULL;
                 }
@@ -879,8 +869,8 @@ int searchDeleteBinary(struct student_details_binary **current, struct student_d
                 return found;
             } 
         }
-        searchDeleteBinary(&(*current)->left, &(*current), student_name, found);
-        searchDeleteBinary(&(*current)->right, &(*current), student_name, found);
+        deleteBinary(&(*root), &(*current)->left, &(*current), student_name, found);
+        deleteBinary(&(*root), &(*current)->right, &(*current), student_name, found);
     }
 }
 
