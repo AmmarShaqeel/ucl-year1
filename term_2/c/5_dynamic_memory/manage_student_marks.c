@@ -183,6 +183,7 @@ int main(int argc, char *argv[])
                     scanf("%s",&student_name);
                     printf("Please input the new student's number\n");
                     scanf("%d",&student_number);
+
                     newStudentBinary(&root, student_name, student_number);
                 break;
                 
@@ -201,6 +202,7 @@ int main(int argc, char *argv[])
 
                     found = deleteBinary(&root, &root, NULL, student_name, found); 
 
+                    printf("TK: new root outside %s \n", root->student_name);
                     if(found == 0)
                     {
                         printf("\nNo matching students found\n");
@@ -759,7 +761,7 @@ int deleteBinary(struct student_details_binary **root, struct student_details_bi
                 /* if root node has no children */
                 if((*root)->right == NULL && (*root)-> left == NULL)
                 {
-                    printf("TK: deleting\n");
+                    printf("TK: no children\n");
                     free(*root);
                     *root = NULL;
                     return found;
@@ -772,26 +774,30 @@ int deleteBinary(struct student_details_binary **root, struct student_details_bi
                     /* if node has left child */
                     if((*root)->right == NULL && (*root)->left != NULL)
                     {
+                        printf("TK: root left child\n");
                         *current = *root;
                         *root = (*current)->left;
-                        free(current);
+                        printf("TK: new root: %s\n", (*root)->student_name);
+                        free(*current);
                         return found;
                     }
 
                     /* if node has right child */
                     else if((*root)->right != NULL && (*root)->left == NULL)
                     {
+                        printf("TK: root left child\n");
                         *current = *root;
                         *root = (*current)->right;
+                        printf("TK: new root: %s\n", (*root)->student_name);
                         free(*current);
                         return found;
                     }
                 }
             }
             /* if current node has no children */
-            if((*current)->right == NULL && (*current)-> left == NULL)
+            else if((*current)->right == NULL && (*current)-> left == NULL)
             {
-                printf("TK: deleting");
+                printf("TK: no children\n");
                 if((*previous)->right == *current)
                 {
                     (*previous)->right = NULL;
@@ -808,6 +814,7 @@ int deleteBinary(struct student_details_binary **root, struct student_details_bi
             else if( ((*current)->right == NULL && (*current)->left != NULL) ||
                     ((*current)->right != NULL && (*current)->left == NULL))
             {
+                printf("TK: one child\n");
                 /* if node has left child */
                 if((*current)->right == NULL && (*current)->left != NULL)
                 {
@@ -842,7 +849,7 @@ int deleteBinary(struct student_details_binary **root, struct student_details_bi
             /* Node has two children */
             else if( (*current)->right != NULL && (*current)->left != NULL)
             {
-
+                printf("TK: two childs\n");
                 smallest = (*current)->right;
                 smallest_previous = (*current);
 
@@ -852,7 +859,7 @@ int deleteBinary(struct student_details_binary **root, struct student_details_bi
                     smallest = smallest->left;
                 }
                 
-                printf("TK: student name %s",smallest->student_name);
+                printf("TK: smallest right student name %s",smallest->student_name);
 
                 strcpy((*current)->student_name,smallest->student_name);
                 (*current)->student_number = smallest->student_number;
@@ -920,6 +927,7 @@ void readBinary(struct student_details_binary **root, FILE **file)
     {
         case 1:
             deleteAllBinary(&(*root));
+            *root = NULL;
         break;
         case 2:
             return;
