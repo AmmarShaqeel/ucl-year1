@@ -657,8 +657,9 @@ void leftRotateBinary(struct student_details_binary **current)
 void balanceBinary(struct student_details_binary **root)
 {
     struct student_details_binary *current;
-    int expected, i;
+    int expected, i, odd_nodes;
     int num_nodes = 0;
+    int num_rotations = 0; /* TK */
 
     printf("TK: balancing function running \n");
     current = *root;
@@ -678,7 +679,6 @@ void balanceBinary(struct student_details_binary **root)
     printf("TK: expected floor nodes %d \n", expected);
     printf("TK: current = %s\n", current ->student_name);
     printf("TK: root = %s\n", (*root)->student_name);
-    return;
 
     current = *root;
     for(i=0; i<expected; i++)
@@ -689,12 +689,32 @@ void balanceBinary(struct student_details_binary **root)
     }
 
     current = *root;
-    while(current->right != NULL)
-    {
-        printf("TK: folding odd nodes\n");
-        leftRotateBinary(&(current->right));
-        current = current->right;
+    num_nodes = num_nodes - expected;
+    odd_nodes = (num_nodes+1)/2;
+
+    printf("TK: odd nodes %d \n", odd_nodes);
+
+    while(odd_nodes > 1)
+    {   
+        printf("TK: while: odd nodes %d \n", odd_nodes);
+        /* left rotate root */
+        leftRotateBinary(&(*root));
+        printf("TK: root = %s\n", (*root)->student_name);
+        num_rotations++;
+
+        for(i=0;i<(odd_nodes-1);i++)
+        {
+            printf("TK: folding odd nodes\n");
+            leftRotateBinary(&(current->right));
+            current = current->right;
+            printf("TK: root = %s\n", (*root)->student_name);
+            num_rotations++;
+        }
+
+        odd_nodes = (odd_nodes+1)/2;
     }
+
+    printf("TK: num_rotations%d \n", num_rotations);
 }
 
 /* recursively searches for a student - and if found prints student */
