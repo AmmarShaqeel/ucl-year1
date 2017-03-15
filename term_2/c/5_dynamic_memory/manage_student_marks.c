@@ -3,7 +3,7 @@
 #include<string.h>
 #include <math.h>
 
-/* structure for student details */
+/* structure for linked details */
 struct student_details_linked
 {
 		char student_name[100];
@@ -11,6 +11,7 @@ struct student_details_linked
 		struct student_details_linked *next;
 };
 
+/* structure for binary details */
 struct student_details_binary
 {
 		char student_name[100];
@@ -21,8 +22,10 @@ struct student_details_binary
 
 
 /* declaring functions for linked mode */
-void newStudentLinked(struct student_details_linked **root, char student_name[100], int student_number);
-void deleteLinked(struct student_details_linked **root, char student_name[100]);
+void newStudentLinked(struct student_details_linked **root, char
+        student_name[100], int student_number);
+void deleteLinked(struct student_details_linked **root, char
+        student_name[100]);
 void deleteAllLinked(struct student_details_linked **root);
 void printLinked(struct student_details_linked **root, char student_name[100]);
 void printAllLinked(struct student_details_linked **root);
@@ -30,13 +33,17 @@ void saveLinked(struct student_details_linked **root, FILE **file);
 void readLinked(struct student_details_linked **root, FILE **file);
 
 /* declaring functions for binary mode */
-void newStudentBinary(struct student_details_binary **root, char student_name[100], int student_number);
-int deleteBinary(struct student_details_binary **root, struct student_details_binary **current, struct student_details_binary **previous, char student_name[100], int found);
+void newStudentBinary(struct student_details_binary **root, char
+        student_name[100], int student_number);
+int deleteBinary(struct student_details_binary **root, struct
+        student_details_binary **current, struct student_details_binary
+        **previous, char student_name[100], int found);
 void deleteAllBinary(struct student_details_binary **root);
 void rightRotateBinary(struct student_details_binary **root);
 void leftRotateBinary(struct student_details_binary **root);
 void balanceBinary(struct student_details_binary **root);
-int printBinary(struct student_details_binary **current, char student_name[100], int found);
+int printBinary(struct student_details_binary **current, char
+        student_name[100], int found);
 void printAllBinary(struct student_details_binary **root);
 void saveBinary(struct student_details_binary **current, FILE **file);
 void readBinary(struct student_details_binary **root, FILE **file);
@@ -96,28 +103,36 @@ int main(int argc, char *argv[])
 	    	switch(what_do)
 	    	{
 	    		case 1:
+                    /* asks for input then passes it to add linked function */
                     printf("Please input the new student's name\n");
                     scanf("%s",&student_name);
                     printf("Please input the new student's number\n");
                     scanf("%d",&student_number);
+
                     newStudentLinked(&root,student_name, student_number);
 	    		break;
 	    		
 	    		case 2:
-                    printf("Please input the student you would like to delete.\n");
+                    /* asks for input then passes it to delete function */
+                    printf("Please input the student you would like to "
+                            "delete.\n");
                     scanf("%s",&student_name);
+
                     deleteLinked(&root, student_name);
                     printf("TK: %d\n",root);
 	    		break;
 
 	    		case 3:
+                    /* check if root is null */
                     if(root == NULL)
                     {
                         printf("Please enter some students first!\n");
                         break;
                     }
 
-                    printf("Please input the student you would like to print\n");
+                    /* asks for input and passes it to print function */
+                    printf("Please input the student you would like to "
+                            "print\n");
                     scanf("%s",&student_name);
                     printLinked(&root, student_name);
 	    		break;
@@ -127,6 +142,8 @@ int main(int argc, char *argv[])
 	    		break;
 
 	    		case 5:
+                    /* asks for input, opens file and passes file to 
+                     * save function */
                     printf("\nPlease input your file name\n");
                     scanf("%s",&file_name);
                     file = fopen(file_name, "wb"); 
@@ -137,6 +154,8 @@ int main(int argc, char *argv[])
 	    		break;
 
 	    		case 6:
+                    /* asks for input and passes it to 
+                     * read function */
                     printf("TK: %d\n", root);
                     printf("\nPlease input the file you want to read.\n");
                     scanf("%s",&file_name);
@@ -179,18 +198,25 @@ int main(int argc, char *argv[])
             switch(what_do)
             {
                 case 1:
+                    /* asks for input then passes it to new student
+                     * function then calls balance function */
                     printf("Please input the new student's name\n");
                     scanf("%s",&student_name);
                     printf("Please input the new student's number\n");
                     scanf("%d",&student_number);
 
                     newStudentBinary(&root, student_name, student_number);
-                    balanceBinary(&root);
+                    /* balanceBinary(&root); */
                 break;
                 
                 case 2:
+                    /* asks for input and passes it to delete function
+                     * delete function will return a value of 1, if user is
+                     * found so there if found flag stays zero and no matching
+                     * student message is diplayed  */
                     found = 0;
 
+                    /* checks if root is null */
                     if(root == NULL)
                     {
                         printf("Please enter some students first!\n");
@@ -198,10 +224,12 @@ int main(int argc, char *argv[])
                     }
 
                     fpurge(stdin); 
-                    printf("Please enter the name of the student you would like to delete\n");
+                    printf("Please enter the name of the student you would"
+                            "like to delete\n");
                     scanf("%s",&student_name);
 
-                    found = deleteBinary(&root, &root, NULL, student_name, found); 
+                    found = deleteBinary(&root, &root, NULL, student_name,
+                            found); 
 
                     printf("TK: new root outside %s \n", root->student_name);
                     if(found == 0)
@@ -212,6 +240,10 @@ int main(int argc, char *argv[])
                 break;
 
                 case 3:
+                    /* similar to delete case above - asks for user input and
+                     * then passes it to delete function
+                     * if no student is found flag will stay zero and there
+                     * will be a message complaining */
                     found = 0;
 
                     if(root == NULL)
@@ -221,7 +253,8 @@ int main(int argc, char *argv[])
                     }
 
                     fpurge(stdin); 
-                    printf("Please enter the name of the student you would like to display\n");
+                    printf("Please enter the name of the student you would"
+                            " like to display\n");
                     scanf("%s",&student_name);
 
                     found = printBinary(&root, student_name, found); 
@@ -237,6 +270,8 @@ int main(int argc, char *argv[])
                 break;
 
                 case 5:
+                    /* asks for a file name - opens it then calls the save
+                     * function and passes the file */
                     printf("\nPlease input your file name\n");
                     scanf("%s",&file_name);
                     file = fopen(file_name, "wb"); 
@@ -247,6 +282,8 @@ int main(int argc, char *argv[])
                 break;
 
                 case 6:
+                    /* asks for a file name, opens file, adds students and then
+                     * closes file */
                     printf("TK: %d\n", root);
                     printf("\nPlease input the file you want to read.\n");
                     scanf("%s",&file_name);
@@ -272,7 +309,8 @@ int main(int argc, char *argv[])
 }
 
 /* adds a student to linked list - sorted alphabetically */
-void newStudentLinked(struct student_details_linked **root, char student_name[100], int student_number)
+void newStudentLinked(struct student_details_linked **root, char
+        student_name[100], int student_number)
 {
 	struct student_details_linked *current;
 	struct student_details_linked *previous = NULL;
@@ -336,18 +374,7 @@ void deleteLinked(struct student_details_linked **root, char student_name[100])
     struct student_details_linked *current;
     struct student_details_linked *previous = NULL;
 
-    /* checks if root is null to stop errors  */
-    if(*root == NULL)
-    {
-        printf("Please input students before trying to remove them!\n");
-        return;
-    }
-
 	current = *root;
-
-	fpurge(stdin); 
-    printf("Please enter the name of the student you would like to remove\n");
-    scanf("%s",&student_name);
 
     /* loops over list, until either the end is reached or a match is found */
     while(current->next != NULL && strcmp(current->student_name,student_name)
@@ -406,6 +433,8 @@ void deleteAllLinked(struct student_details_linked **root)
 
 	current = *root;
     *root = NULL;
+
+    /* loops through list deleting elements */
     while(current != NULL)
     {
         previous = current;
@@ -447,6 +476,7 @@ void printAllLinked(struct student_details_linked **root)
 
 	current = *root;
 
+    /* loops through list printing elements */
 	while(current != NULL)
 	{
 	    printf("Student name is: %s\n", current->student_name);  
@@ -462,6 +492,7 @@ void saveLinked(struct student_details_linked **root, FILE **file)
 
 	current = *root;
     
+    /* loops through list writing each element to file */
 	while(current != NULL)
 	{
         fwrite(current, sizeof(struct student_details_linked), 1, *file);
@@ -480,14 +511,15 @@ void readLinked(struct student_details_linked **root, FILE **file)
 
 	current = *root;
 
+    /* checks if user would like to proceed */
     printf("All unsaved changes will be lost."
-            "Would you you like to continue?"
+            " Would you you like to continue?"
             "\n1.Yes\n2.No\n");
     scanf("%d",&what_do);
-
     switch(what_do)
     {
         case 1:
+            /* deletes all users */
             deleteAllLinked(&*root);
         break;
         case 2:
@@ -500,6 +532,7 @@ void readLinked(struct student_details_linked **root, FILE **file)
         current = malloc(sizeof(struct student_details_linked));
         *root = current;
         
+        /* loops through file reading elements */
         while(fread(current, sizeof(struct student_details_linked), 1, *file))
         {
             i = 1;
@@ -507,7 +540,8 @@ void readLinked(struct student_details_linked **root, FILE **file)
             previous = current;
             current = current->next;
         }
-        
+
+        /* if loops ran then closes last malloced space */
         if (i == 1)
         {
             previous->next = NULL;
@@ -523,7 +557,8 @@ void readLinked(struct student_details_linked **root, FILE **file)
 
 /* adds a new binary students - sorted alphabetically
  * doesn't allow addition of students with the same name */
-void newStudentBinary(struct student_details_binary **root, char student_name[100], int student_number)
+void newStudentBinary(struct student_details_binary **root, char
+        student_name[100], int student_number)
 {
 	struct student_details_binary *current;
 	struct student_details_binary *previous = NULL;
@@ -548,9 +583,8 @@ void newStudentBinary(struct student_details_binary **root, char student_name[10
     } 
 	else	
 	{
-        /* iterates through list until either: the last element is reached, 
-         * or until the strcmp gives a positive value (meaning that the next 
-         * element is further down alphabetically  */
+        /* goes through tree until and empty place if found where item should
+         * be */
         while(current != NULL) 
         {
             if(strcmp(current->student_name, new->student_name) < 0)
@@ -571,6 +605,7 @@ void newStudentBinary(struct student_details_binary **root, char student_name[10
             }
         }
 
+        /* checks whether new element should be placed to thre right or left */
        if(strcmp(previous->student_name, new->student_name) < 0)
        {
            previous->right=new;
@@ -582,6 +617,7 @@ void newStudentBinary(struct student_details_binary **root, char student_name[10
     }
 }
 
+/* right rotates a node */
 void rightRotateBinary(struct student_details_binary **current)
 {
     struct student_details_binary *temp;
@@ -619,6 +655,7 @@ void rightRotateBinary(struct student_details_binary **current)
     free(left);
 }
 
+/* left rotates a node */
 void leftRotateBinary(struct student_details_binary **current)
 {
     struct student_details_binary *temp;
@@ -656,6 +693,7 @@ void leftRotateBinary(struct student_details_binary **current)
     free(right);
 }
     
+/* balances a binary tree through day-stout-warren algo */
 void balanceBinary(struct student_details_binary **root)
 {
     struct student_details_binary *current;
@@ -666,6 +704,8 @@ void balanceBinary(struct student_details_binary **root)
     printf("TK: balancing function running \n");
     current = *root;
 
+    /* unfolds tree by right rotating until there are no
+     * more left children */
     while (current != NULL)
     {
         printf("TK: unfolding tree\n");
@@ -677,12 +717,16 @@ void balanceBinary(struct student_details_binary **root)
         num_nodes++;
     }
     printf("TK: num nodes %d \n", num_nodes);
+
+    /* calculates floor nodes through 2n-1
+     * (as sum of 2^i from 0 to n is 
+     * equal to 2^(n+1) - 1 */
     expected = num_nodes - (pow(2,(floor(log2(num_nodes+1)))) - 1);
     printf("TK: expected floor nodes %d \n", expected);
     printf("TK: current = %s\n", current ->student_name);
     printf("TK: root = %s\n", (*root)->student_name);
-
     current = *root;
+    /* folds expected floor values */
     for(i=0; i<expected; i++)
     {
         printf("TK: folding expected nodes\n");
@@ -690,20 +734,20 @@ void balanceBinary(struct student_details_binary **root)
         current = current->right;
     }
 
+    /* rotates odd nodes along tree */
     current = *root;
     num_nodes = num_nodes - expected;
     odd_nodes = (num_nodes+1)/2;
-
     printf("TK: odd nodes %d \n", odd_nodes);
-
     while(odd_nodes > 1)
     {   
         printf("TK: while: odd nodes %d \n", odd_nodes);
-        /* left rotate root */
+        /* left rotates root */
         leftRotateBinary(&(*root));
         printf("TK: root = %s\n", (*root)->student_name);
         num_rotations++;
 
+        /* rotates odd nodes along the rest of the tree*/
         for(i=0;i<(odd_nodes-1);i++)
         {
             printf("TK: folding odd nodes\n");
@@ -713,6 +757,7 @@ void balanceBinary(struct student_details_binary **root)
             num_rotations++;
         }
 
+        /* increments odd nodes */
         odd_nodes = (odd_nodes+1)/2;
     }
 
@@ -729,6 +774,7 @@ int printBinary(struct student_details_binary **current, char
 	}
     else
     {
+        /* returns and prints name if student is found */
         if(strcmp((*current)->student_name, student_name) == 0)
         {
             found = 1;
@@ -736,6 +782,7 @@ int printBinary(struct student_details_binary **current, char
             printf("Student number is: %d\n\n", (*current)->student_number);  
             return found;
         }
+        /* function recursively calls itself if nothing is found */
         found = printBinary(&(*current)->left, student_name, found);
         found = printBinary(&(*current)->right, student_name, found);
     }
@@ -754,6 +801,7 @@ void printAllBinary(struct student_details_binary **root)
 	}
     else
     {
+        /* function recursively calls itself */
         printAllBinary(&current->left);
 	    printf("Student name is: %s\n", current->student_name);  
 	    printf("Student number is: %d\n\n", current->student_number);  
@@ -763,13 +811,16 @@ void printAllBinary(struct student_details_binary **root)
 
 /* recursive search function for deletion */
 /* checks if root is null or needs to be deleted  */
-int deleteBinary(struct student_details_binary **root, struct student_details_binary **current, struct student_details_binary **previous, char student_name[100], int found)
+int deleteBinary(struct student_details_binary **root, struct
+        student_details_binary **current, struct student_details_binary
+        **previous, char student_name[100], int found)
 {
     struct student_details_binary *replace;
     struct student_details_binary *replace_previous;
     printf("TK: delete function running\n");
     printf("TK: %d\n", previous);
 
+    /* returns if null value is reached */
 	if (*current == NULL)
 	{
         return found;
@@ -780,7 +831,7 @@ int deleteBinary(struct student_details_binary **root, struct student_details_bi
         {
             printf("TK: student found\n");
             found = 1;
-            /* runs if root needs to be reassigned */
+            /* runs if root is to deleted */
             if((previous) == NULL)
             {
                 printf("TK: changing root\n");
@@ -797,7 +848,7 @@ int deleteBinary(struct student_details_binary **root, struct student_details_bi
                 else if( ((*root)->right == NULL && (*root)->left != NULL) ||
                         ((*root)->right != NULL && (*root)->left == NULL))
                 {
-                    /* if node has left child */
+                    /* if root has left child */
                     if((*root)->right == NULL && (*root)->left != NULL)
                     {
                         printf("TK: root left child\n");
@@ -808,7 +859,7 @@ int deleteBinary(struct student_details_binary **root, struct student_details_bi
                         return found;
                     }
 
-                    /* if node has right child */
+                    /* if root has right child */
                     else if((*root)->right != NULL && (*root)->left == NULL)
                     {
                         printf("TK: root left child\n");
@@ -820,6 +871,7 @@ int deleteBinary(struct student_details_binary **root, struct student_details_bi
                     }
                 }
 
+                /* if root has two childrens */
                 else if((*root)->right != NULL && (*root)->left != NULL)
                 {
                     printf("TK: two childs\n");
@@ -832,7 +884,8 @@ int deleteBinary(struct student_details_binary **root, struct student_details_bi
                         replace = replace->left;
                     }
                     
-                    printf("TK: replace right student name %s\n",replace->student_name);
+                    printf("TK: replace right student name "
+                            "%s\n",replace->student_name);
 
                     strcpy((*root)->student_name,replace->student_name);
                     (*root)->student_number = replace->student_number;
@@ -913,21 +966,27 @@ int deleteBinary(struct student_details_binary **root, struct student_details_bi
                 replace = (*current)->right;
                 replace_previous = (*current);
 
+                /* searches for the smallest value that is larger than curent
+                 * value */
                 while(replace->left != NULL)
                 {
                     replace_previous = replace;
                     replace = replace->left;
                 }
                 
-                printf("TK: replace right student name %s\n",replace->student_name);
+                printf("TK: replace right student name "
+                        "%s\n",replace->student_name);
 
+                /* switches found value with node to be deleted */
                 strcpy((*current)->student_name,replace->student_name);
                 (*current)->student_number = replace->student_number;
-                if(replace_previous == (*current))
+
+                /* sets pointer to replace to NULL */
+                if(replace_previous->right == replace)
                 {
-                    (*current)->right = NULL;
+                    replace_previous->right = NULL;
                 }
-                else
+                else if(replace_previous->left == replace)
                 {
                     replace_previous->left = NULL;
                 }
@@ -936,8 +995,11 @@ int deleteBinary(struct student_details_binary **root, struct student_details_bi
                 return found;
             } 
         }
-        deleteBinary(&(*root), &(*current)->left, &(*current), student_name, found);
-        deleteBinary(&(*root), &(*current)->right, &(*current), student_name, found);
+        /* recursive search */
+        deleteBinary(&(*root), &(*current)->left, &(*current), student_name,
+                found);
+        deleteBinary(&(*root), &(*current)->right, &(*current), student_name,
+                found);
     }
 }
 
@@ -948,9 +1010,12 @@ void deleteAllBinary(struct student_details_binary **current)
     {
         return;
     }
+    /* recursive movement */
     deleteAllBinary(&((*current)->left));
     deleteAllBinary(&((*current)->right));
     printf("TK: Deleting %s\n", (*current)->student_name);
+
+    /* frees current */
     free(*current);
 }
 
@@ -963,8 +1028,10 @@ void saveBinary(struct student_details_binary **current, FILE **file)
         return;
     } 
 
+    /* writes current struct to file */
     fwrite(*current, sizeof(struct student_details_binary), 1, *file);
 
+    /* recursive movement */
     saveBinary(&(*current)->left, &(*file));
     saveBinary(&(*current)->right, &(*file));
 }
@@ -978,11 +1045,11 @@ void readBinary(struct student_details_binary **root, FILE **file)
     struct student_details_binary *current;
     struct student_details_binary *previous;
 
+    /* checks if user would like to continue */
     printf("All unsaved changes will be lost. "
             "Would you like to continue?"
             "\n1.Yes\n2.No\n");
     scanf("%d",&what_do);
-
     switch(what_do)
     {
         case 1:
@@ -995,6 +1062,9 @@ void readBinary(struct student_details_binary **root, FILE **file)
     }
 
 
+    /* reads file and passes each read to new student function
+     * all data is read to the same piece of memory which is closed at the end
+     * */
     if (file != NULL)
     {
         current = malloc(sizeof(struct student_details_binary));
