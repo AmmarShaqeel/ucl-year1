@@ -185,6 +185,7 @@ int main(int argc, char *argv[])
                     scanf("%d",&student_number);
 
                     newStudentBinary(&root, student_name, student_number);
+                    balanceBinary(&root);
                 break;
                 
                 case 2:
@@ -207,6 +208,7 @@ int main(int argc, char *argv[])
                     {
                         printf("\nNo matching students found\n");
                     }
+                    balanceBinary(&root);
                 break;
 
                 case 3:
@@ -817,6 +819,35 @@ int deleteBinary(struct student_details_binary **root, struct student_details_bi
                         return found;
                     }
                 }
+
+                else if((*root)->right != NULL && (*root)->left != NULL)
+                {
+                    printf("TK: two childs\n");
+                    replace = (*root)->right;
+                    replace_previous = (*root);
+
+                    while(replace->left != NULL)
+                    {
+                        replace_previous = replace;
+                        replace = replace->left;
+                    }
+                    
+                    printf("TK: replace right student name %s\n",replace->student_name);
+
+                    strcpy((*root)->student_name,replace->student_name);
+                    (*root)->student_number = replace->student_number;
+                    if(replace_previous == (*root))
+                    {
+                        (*root)->right = NULL;
+                    }
+                    else
+                    {
+                        replace_previous->left = NULL;
+                    }
+
+                    free(replace);
+                    return found;
+                } 
             }
             /* if current node has no children */
             else if((*current)->right == NULL && (*current)-> left == NULL)
@@ -838,34 +869,39 @@ int deleteBinary(struct student_details_binary **root, struct student_details_bi
             else if( ((*current)->right == NULL && (*current)->left != NULL) ||
                     ((*current)->right != NULL && (*current)->left == NULL))
             {
+                replace = *current;
+                replace_previous = *previous;
+
                 printf("TK: one child\n");
                 /* if node has left child */
                 if((*current)->right == NULL && (*current)->left != NULL)
                 {
-                    if ((*previous)->right == *current)
+                    printf("TK: one left child\n");
+                    if(replace_previous->right == replace)
                     {
-                        (*previous)->right = (*current)->left;
+                        replace_previous->right = replace->left;
                     }
-                    else if((*previous)->left == *current)
+                    else if(replace_previous->left == replace)
                     {
-                        (*previous)->left = (*current)->left;
+                        replace_previous->left = replace->left;
                     }
-                    free(*current);
+                    free(replace);
                     return found;
                 }
 
                 /* if node has right child */
                 else if((*current)->right != NULL && (*current)->left == NULL)
                 {
-                    if ((*previous)->right == *current)
+                    printf("TK: one right child\n");
+                    if (replace_previous->right == replace)
                     {
-                        (*previous)->right = (*current)->right;
+                        replace_previous->right = replace->right;
                     }
-                    else if((*previous)->left == *current)
+                    else if(replace_previous->left == replace)
                     {
-                        (*previous)->left = (*current)->right;
+                        replace_previous->left = replace->right;
                     }
-                    free(*current);
+                    free(replace);
                     return found;
                 }
             }
@@ -883,7 +919,7 @@ int deleteBinary(struct student_details_binary **root, struct student_details_bi
                     replace = replace->left;
                 }
                 
-                printf("TK: replace right student name %s",replace->student_name);
+                printf("TK: replace right student name %s\n",replace->student_name);
 
                 strcpy((*current)->student_name,replace->student_name);
                 (*current)->student_number = replace->student_number;
