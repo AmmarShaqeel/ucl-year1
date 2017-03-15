@@ -606,10 +606,6 @@ void rightRotateBinary(struct student_details_binary **current)
     strcpy(original->student_name,left->student_name);
     original->student_number = left->student_number;
 
-    /* copies info from temp to left node */
-    strcpy(left->student_name, temp->student_name);
-    left->student_number, temp->student_number;
-
     /* moves temp between the org and right 
      * and saves value of left's left*/
     temp->left = left->right; 
@@ -646,10 +642,6 @@ void leftRotateBinary(struct student_details_binary **current)
     /* copies info from right node to org node */
     strcpy(original->student_name,right->student_name);
     original->student_number = right->student_number;
-
-    /* copies info from temp to right node */
-    strcpy(right->student_name, temp->student_name);
-    right->student_number = temp->student_number;
 
     /* moves temp between the org and left 
      * and saves value of right's right*/
