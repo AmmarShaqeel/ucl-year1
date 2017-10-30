@@ -42,7 +42,9 @@ grid on;
 
 % Vi at onset of distortion vs freq
 figure(3);
-plot(log_freq, v_in_distortion,'-xb'); % X-AXIS IS LOGARITHMIC, Y-AXIS IS LINEAR
+plot(log_freq, v_in_distortion,'-xb');
+hold on;
+h1 = area(log_freq(1,1:5), v_in_distortion(1,1:5));
 xlabel('Frequency (log10)','Fontsize',24);
 ylabel('Vin (V)','Fontsize',24);
 title('Vin at distortion vs Frequency ','Fontsize',24);
