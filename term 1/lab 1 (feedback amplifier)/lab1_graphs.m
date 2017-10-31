@@ -1,5 +1,3 @@
-%%% TEMPLATE MATLAB CODE FOR PLOTTING GRAPHS %%%%%
-
 clc;
 close all;
 clear all;
@@ -67,7 +65,7 @@ set(gca,'Fontsize',18);
 grid on;
 
 % Vi at onset of distortion vs freq
-figure(3);
+figure(4);
 subplot(2,1,1);
 plot(open_freq_log, open_v_in_distortion,'-xb');
 hold on;
@@ -97,12 +95,16 @@ grid on;
 hold off;
 
 
-% Vout pk-pj vs 1/Rl
-figure(4);
+% Vout pk-pk vs 1/Rl
+figure(5);
 plot(open_rl, open_v_out_current_limit,'-xb');
+hold on
+plot(closed_rl, closed_v_out_current_limit,'-or');
 xlabel('RL (ohm)','Fontsize',24);
 ylabel('Vout (V))','Fontsize',24);
 title('Vout vs RL ','Fontsize',24);
 set(gca,'Fontsize',18);
 grid on;
+legend('Open Loop', 'Closed Loop');
+
 
